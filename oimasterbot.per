@@ -1,0 +1,1247 @@
+; oimasterbot
+; Version 1.0
+; Copyright 2025 oimasterkafuu
+; @actions.md @facts.md @params.md @sns.md @oimasterbot.old.per @oimasterbot.per
+; # Constants, sorted by id
+; ## Units
+(defconst u-arbalest -299)
+(defconst u-villager 83)
+(defconst u-monk 125)
+(defconst u-trebuchet 331)
+(defconst u-eagle-scout 751)
+(defconst u-jaguar-warrior jaguar-man-line)
+; ## Buildings
+(defconst b-barracks 12)
+(defconst b-farm 50)
+(defconst b-mill 68)
+(defconst b-house 70)
+(defconst b-castle 82)
+(defconst b-market 84)
+(defconst b-archery-range 87)
+(defconst b-blacksmith 103)
+(defconst b-monastery 104)
+(defconst b-town-center 109)
+(defconst b-university 209)
+(defconst b-lumber-camp 562)
+(defconst b-mining-camp 584)
+; ## Research
+(defconst r-crop-rotation 12)
+(defconst r-heavy-plow 13)
+(defconst r-horse-collar 14)
+(defconst r-loom 22)
+(defconst r-garland-wars 24)
+(defconst r-chemistry 47)
+(defconst r-treadmill-crane 54)
+(defconst r-gold-mining 55)
+(defconst r-forging 67)
+(defconst r-iron-casting 68)
+(defconst r-scale-mail-armor 74)
+(defconst r-blast-furnace 75)
+(defconst r-chain-mail-armor 76)
+(defconst r-plate-mail-armor 77)
+(defconst r-tracking 90)
+(defconst r-ballistics 93)
+(defconst r-crossbow 100)
+(defconst r-feudal-age 101)
+(defconst r-castle-age 102)
+(defconst r-imperial-age 103)
+(defconst r-gold-shaft-mining 182)
+(defconst r-fletching 199)
+(defconst r-bodkin-arrow 200)
+(defconst r-bracer 201)
+(defconst r-double-bit-axe 202)
+(defconst r-bow-saw 203)
+(defconst r-padded-archer-armor 211)
+(defconst r-leather-archer-armor 212)
+(defconst r-wheel-barrow 213)
+(defconst r-squires 215)
+(defconst r-block-printing 230)
+(defconst r-sanctity 231)
+(defconst r-illumination 233)
+(defconst r-arbalest 237)
+(defconst r-hand-cart 249)
+(defconst r-fervor 252)
+(defconst r-stone-mining 278)
+(defconst r-stone-shaft-mining 279)
+(defconst r-conscription 315)
+(defconst r-redemption 316)
+(defconst r-atonement 319)
+(defconst r-murder-holes 322)
+(defconst r-elite-jaguar-warrior 432)
+(defconst r-theocracy 438)
+(defconst r-herbal-medicine 441)
+(defconst r-arson 602)
+; ## Goals
+(defconst ad-feudal 1)
+(defconst ad-castle 2)
+(defconst ad-imperial 3)
+(defconst attack 4)
+; ## Timers
+(defconst t-c-timer 1)
+(defconst t-i-timer 2)
+(defconst t-tsa-timer 3)
+(defconst t-tsa-end-timer 4)
+(defconst t-is-wheel-barrow-ok 5)
+; # Start Up
+(defrule
+    (true)
+=>
+    (chat-local-to-self "copyright")
+    (chat-to-all "oimasterbot v1.0")
+    (chat-to-all "Copyright (c) 2025 oimasterkafuu")
+    (disable-self)
+)
+(defrule
+    (true)
+=>
+    (chat-local-to-self "peace config")
+    (set-strategic-number sn-percent-civilian-explorers 0)
+    (set-strategic-number sn-percent-civilian-builders 100)
+    (set-strategic-number sn-percent-civilian-gatherers 100)
+    (set-strategic-number sn-cap-civilian-builders 500)
+    (set-strategic-number sn-cap-civilian-gatherers 500)
+    (set-strategic-number sn-intelligent-gathering 1)
+    (set-strategic-number sn-wall-targeting-mode 1)
+    (set-strategic-number sn-number-explore-groups 3)
+    (set-strategic-number sn-initial-exploration-required 0)
+    (set-strategic-number sn-build-frequency 500)
+    (set-strategic-number sn-enemy-sighted-response-distance 30)
+    (set-strategic-number sn-task-ungrouped-soldiers 0)
+    (set-strategic-number ability-to-dodge-missiles 100)
+    (set-strategic-number ability-to-maintain-distance 100)
+    (set-goal ad-feudal 0)
+    (set-goal ad-castle 0)
+    (set-goal ad-imperial 0)
+    (disable-self)
+)
+(defrule
+    (goal attack 1)
+=>
+    (chat-to-allies "tsa")
+    (set-strategic-number sn-maximum-town-size 255)
+    (set-strategic-number sn-home-exploration-time 0)
+    (set-strategic-number sn-number-attack-groups 200)
+    (set-strategic-number sn-maximum-attack-group-size 500)
+    (set-strategic-number sn-minimum-attack-group-size 1)
+    (set-strategic-number sn-attack-intelligence 1)
+    (set-strategic-number sn-enemy-sighted-response-distance 255)
+    (set-strategic-number sn-disable-attack-groups 0)
+    (set-strategic-number sn-percent-attack-soldiers 100)
+    (set-goal attack 0)
+)
+(defrule
+    (goal attack 2)
+=>
+    (chat-to-allies "tsa end")
+    (set-strategic-number sn-maximum-town-size 35)
+    (set-strategic-number sn-home-exploration-time 300)
+    (set-strategic-number sn-number-attack-groups 0)
+    (set-strategic-number sn-enemy-sighted-response-distance 30)
+    (set-strategic-number sn-percent-attack-soldiers 0)
+    (set-goal attack 0)
+)
+; # Dark Age
+; ## Strategies
+(defrule
+    (current-age == dark-age)
+=>
+    (chat-local-to-self "dark init")
+    (set-strategic-number sn-maximum-town-size 20)
+    (set-strategic-number sn-camp-max-distance 20)
+    (set-strategic-number sn-mill-max-distance 20)
+    (set-strategic-number sn-maximum-hunt-drop-distance 40)
+    (set-strategic-number sn-maximum-food-drop-distance 40)
+    (disable-self)
+)
+(defrule
+    (current-age == dark-age)
+=>
+    (chat-local-to-self "dark resource config")
+    (set-strategic-number sn-food-gatherer-percentage 100)
+    (set-strategic-number sn-wood-gatherer-percentage 0)
+    (set-strategic-number sn-gold-gatherer-percentage 0)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-self)
+)
+(defrule
+    (current-age == dark-age)
+    (unit-type-count u-villager >= 20)
+=>
+    (chat-local-to-self "dark 20p resource config")
+    (set-strategic-number sn-food-gatherer-percentage 50)
+    (set-strategic-number sn-wood-gatherer-percentage 50)
+    (set-strategic-number sn-gold-gatherer-percentage 0)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-self)
+)
+; ## Research
+(defrule
+    (can-research r-loom)
+=>
+    (chat-local-to-self "r loom")
+    (research r-loom)
+)
+(defrule
+    (can-research r-feudal-age)
+    (current-age == dark-age)
+    (unit-type-count u-villager >= 32)
+=>
+    (chat-local-to-self "r feudal age")
+    (research r-feudal-age)
+    (set-goal ad-feudal 1)
+)
+; ## Buildings
+(defrule
+    (current-age == dark-age)
+    (goal ad-feudal 0)
+    (can-build house)
+    (building-type-count house < 7)
+    (housing-headroom < 8)
+=>
+    (chat-local-to-self "b house")
+    (build house)
+)
+(defrule
+    (can-build b-mill)
+    (building-type-count b-mill < 1)
+=>
+    (chat-local-to-self "b mill")
+    (build b-mill)
+)
+(defrule
+    (can-build b-lumber-camp)
+    (building-type-count b-lumber-camp < 1)
+    (unit-type-count u-villager >= 6)
+=>  
+    (chat-local-to-self "b lumber camp")
+    (build b-lumber-camp)
+)
+(defrule
+    (can-build b-mill)
+    (building-type-count b-mill < 2)
+    (unit-type-count u-villager >= 13)
+=>
+    (chat-local-to-self "b mill2")
+    (build b-mill)
+)
+(defrule
+    (can-build b-mill)
+    (building-type-count b-mill < 3)
+    (unit-type-count u-villager >= 20)
+=>
+    (chat-local-to-self "b mill3")
+    (build b-mill)
+)
+(defrule
+    (can-build b-mining-camp)
+    (building-type-count b-mining-camp < 3)
+    (unit-type-count u-villager >= 20)
+=>
+    (chat-local-to-self "b mining camp")
+    (build b-mining-camp)
+)
+(defrule
+    (can-build b-farm)
+    (building-type-count b-farm < 8)
+    (unit-type-count u-villager >= 26)
+=>
+    (chat-local-to-self "b farm")
+    (build b-farm)
+)
+; ## Units
+(defrule
+    (can-train u-villager)
+    (unit-type-count u-villager < 32)
+    (research-completed r-loom)
+=>
+    (chat-local-to-self "u villager")
+    (train u-villager)
+)
+; # Dark to Feudal
+; ## Strategies
+(defrule
+    (goal ad-feudal 1)
+=>
+    (chat-local-to-self "dtf init")
+    (set-strategic-number sn-maximum-town-size 22)
+    (set-strategic-number sn-camp-max-distance 22)
+    (set-strategic-number sn-mill-max-distance 22)
+    (disable-self)
+)
+(defrule
+    (goal ad-feudal 1)
+=>
+    (chat-local-to-self "dtf resource config")
+    (set-strategic-number sn-food-gatherer-percentage 45)
+    (set-strategic-number sn-wood-gatherer-percentage 55)
+    (set-strategic-number sn-gold-gatherer-percentage 0)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-self)
+)
+; ## Research
+; ## Buildings
+(defrule
+    (not(goal ad-feudal 0))
+    (can-build b-farm)
+    (building-type-count b-farm < 12)
+=>
+    (chat-local-to-self "b farm")
+    (build b-farm)
+)
+(defrule
+    (not(goal ad-feudal 0))
+    (can-build b-house)
+    (building-type-count b-house < 12)
+=>
+    (chat-local-to-self "b house")
+    (build b-house)
+)
+(defrule
+    (not(goal ad-feudal 0))
+    (can-build b-barracks)
+    (building-type-count b-barracks < 1)
+    (or
+        (wood-amount >= 1000)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "b barracks")
+    (build b-barracks)
+)
+; ## Units
+; # Feudal Age
+; ## Strategies
+(defrule
+    (current-age == feudal-age)
+=>
+    (chat-local-to-self "feudal init")
+    (set-goal ad-feudal 2)
+    (set-strategic-number sn-maximum-town-size 25)
+    (set-strategic-number sn-camp-max-distance 25)
+    (set-strategic-number sn-mill-max-distance 25)
+    (enable-timer t-is-wheel-barrow-ok 10)
+    (disable-self)
+)
+(defrule
+    (current-age == feudal-age)
+=>
+    (chat-local-to-self "feudal resource config")
+    (set-strategic-number sn-food-gatherer-percentage 45)
+    (set-strategic-number sn-wood-gatherer-percentage 40)
+    (set-strategic-number sn-gold-gatherer-percentage 15)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-self)
+)
+; ## Research
+(defrule
+    (can-research r-castle-age)
+    (current-age == feudal-age)
+=>
+    (chat-local-to-self "r castle age")
+    (research r-castle-age)
+    (set-goal ad-castle 1)
+    (disable-timer t-is-wheel-barrow-ok)
+)
+(defrule
+    (can-research r-wheel-barrow)
+    (not(timer-triggered t-is-wheel-barrow-ok))
+    (or
+        (wood-amount >= 500)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "r wheel barrow")
+    (research r-wheel-barrow)
+)
+(defrule
+    (can-research r-horse-collar)
+    (or
+        (wood-amount >= 500)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "r horse collar")
+    (research r-horse-collar)
+)
+(defrule
+    (can-research r-gold-mining)
+    (or
+        (wood-amount >= 500)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "r gold mining")
+    (research r-gold-mining)
+)
+(defrule
+    (can-research r-double-bit-axe)
+    (or
+        (wood-amount >= 500)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "r double bit axe")
+    (research r-double-bit-axe)
+)
+(defrule
+    (can-research r-stone-mining)
+    (or
+        (wood-amount >= 500)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "r stone mining")
+    (research r-stone-mining)
+)
+; ## Buildings
+(defrule
+    (not(goal ad-feudal 0))
+    (can-build b-farm)
+    (building-type-count b-farm < 16)
+    (or
+        (wood-amount >= 1000)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "b farm")
+    (build b-farm)
+)
+(defrule
+    (goal ad-feudal 2)
+    (can-build b-house)
+    (building-type-count b-house < 16)
+    (or
+        (wood-amount >= 1000)
+        (and
+            (building-type-count b-market >= 1)
+            (building-type-count b-blacksmith >= 1)
+        )
+    )
+=>
+    (chat-local-to-self "b house")
+    (build b-house)
+)
+(defrule
+    (can-build b-market)
+    (building-type-count b-market < 1)
+=>
+    (chat-local-to-self "b market")
+    (build b-market)
+)
+(defrule
+    (can-build b-blacksmith)
+    (building-type-count b-blacksmith < 1)
+=>
+    (chat-local-to-self "b blacksmith")
+    (build b-blacksmith)
+)
+; ## Units
+(defrule
+    (goal ad-imperial 0)
+    (unit-type-count u-eagle-scout < 3)
+    (can-train u-eagle-scout)
+=>
+    (chat-local-to-self "u eagle scout")
+    (train u-eagle-scout)
+)
+; # Feudal to Castle
+; ## Strategies
+(defrule
+    (goal ad-castle 1)
+=>
+    (chat-local-to-self "ftc init")
+    (set-strategic-number sn-maximum-town-size 27)
+    (set-strategic-number sn-camp-max-distance 27)
+    (set-strategic-number sn-mill-max-distance 27)
+    (set-strategic-number sn-food-gatherer-percentage 10)
+    (set-strategic-number sn-wood-gatherer-percentage 40)
+    (set-strategic-number sn-gold-gatherer-percentage 40)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (disable-self)
+)
+; ## Research
+; ## Units
+; ## Buildings
+; # Castle Age
+; ## Strategies
+(defrule
+    (current-age == castle-age)
+=>
+    (chat-local-to-self "castle init")
+    (set-goal ad-castle 2)
+    (set-strategic-number sn-maximum-town-size 30)
+    (set-strategic-number sn-camp-max-distance 60)
+    (set-strategic-number sn-mill-max-distance 60)
+    (disable-self)
+)
+(defrule
+    (current-age == castle-age)
+=>
+    (chat-local-to-self "castle resource config")
+    (set-strategic-number sn-food-gatherer-percentage 40)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 15)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (disable-self)
+)
+(defrule
+    (current-age == castle-age)
+=>
+    (enable-timer t-c-timer 30)
+    (chat-local-to-self "cr timer")
+    (disable-self)
+)
+(defrule
+    (goal ad-castle 2)
+    (timer-triggered t-c-timer)
+    (food-amount < 1000)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 50)
+    (set-strategic-number sn-wood-gatherer-percentage 40)
+    (set-strategic-number sn-gold-gatherer-percentage 5)
+    (set-strategic-number sn-stone-gatherer-percentage 5)
+    (chat-local-to-self "cr low food")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (goal ad-castle 2)
+    (timer-triggered t-c-timer)
+    (wood-amount < 800)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 40)
+    (set-strategic-number sn-wood-gatherer-percentage 50)
+    (set-strategic-number sn-gold-gatherer-percentage 5)
+    (set-strategic-number sn-stone-gatherer-percentage 5)
+    (chat-local-to-self "cr low wood")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (goal ad-castle 2)
+    (timer-triggered t-c-timer)
+    (gold-amount < 800)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 35)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 20)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self "cr low gold")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (goal ad-castle 2)
+    (timer-triggered t-c-timer)
+    (stone-amount < 650)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 35)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 15)
+    (set-strategic-number sn-stone-gatherer-percentage 15)
+    (chat-local-to-self "cr low stone")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (goal ad-castle 2)
+    (timer-triggered t-c-timer)
+    (food-amount >= 1000)
+    (wood-amount >= 800)
+    (gold-amount >= 800)
+    (stone-amount >= 650)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 40)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 15)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self "cr balanced")
+    (enable-timer t-c-timer 30)
+)
+; ## Research
+(defrule
+    (can-research r-hand-cart)
+=>
+    (chat-local-to-self "r hand cart")
+    (research r-hand-cart)
+)
+(defrule
+    (can-research r-bow-saw)
+=>
+    (chat-local-to-self "r bow saw")
+    (research r-bow-saw)
+)
+(defrule
+    (can-research r-gold-shaft-mining)
+=>
+    (chat-local-to-self "r gold shaft mining")
+    (research r-gold-shaft-mining)
+)
+(defrule
+    (can-research r-stone-shaft-mining)
+=>
+    (chat-local-to-self "r stone shaft mining")
+    (research r-stone-shaft-mining)
+)
+(defrule
+    (can-research r-heavy-plow)
+=>
+    (chat-local-to-self "r heavy plow")
+    (research r-heavy-plow)
+)
+(defrule
+    (can-research r-fervor)
+=>
+    (chat-local-to-self "r fervor")
+    (research r-fervor)
+)
+(defrule
+    (can-research r-tracking)
+=>
+    (chat-local-to-self "r tracking")
+    (research r-tracking)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-fletching)
+=>
+    (chat-local-to-self "r fletching")
+    (research r-fletching)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-bodkin-arrow)
+=>
+    (chat-local-to-self "r bodkin arrow")
+    (research r-bodkin-arrow)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-padded-archer-armor)
+=>
+    (chat-local-to-self "r padded archer armor")
+    (research r-padded-archer-armor)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-leather-archer-armor)
+=>
+    (chat-local-to-self "r leather archer armor")
+    (research r-leather-archer-armor)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-forging)
+=>
+    (chat-local-to-self "r forging")
+    (research r-forging)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-iron-casting)
+=>
+    (chat-local-to-self "r iron casting")
+    (research r-iron-casting)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-scale-mail-armor)
+=>
+    (chat-local-to-self "r scale mail armor")
+    (research r-scale-mail-armor)
+)
+(defrule
+    (unit-type-count u-monk >= 6)
+    (can-research r-chain-mail-armor)
+=>
+    (chat-local-to-self "r chain mail armor")
+    (research r-chain-mail-armor)
+)
+(defrule
+    (can-research r-ballistics)
+=>
+    (chat-local-to-self "r ballistics")
+    (research r-ballistics)
+)
+(defrule
+    (can-research r-murder-holes)
+=>
+    (chat-local-to-self "r murder holes")
+    (research r-murder-holes)
+)
+(defrule
+    (can-research r-treadmill-crane)
+=>
+    (chat-local-to-self "r treadmill crane")
+    (research r-treadmill-crane)
+)
+(defrule
+    (can-research r-imperial-age)
+    (current-age == castle-age)
+=>
+    (chat-local-to-self "r imperial age")
+    (research r-imperial-age)
+    (set-goal ad-imperial 1)
+)
+; ## Buildings
+(defrule
+    (can-build b-house)
+    (building-type-count b-house < 90)
+    (building-type-count b-monastery >= 4)
+=>
+    (chat-local-to-self "b house")
+    (build b-house)
+)
+(defrule
+    (can-build b-farm)
+    (building-type-count b-farm < 80)
+    (building-type-count b-monastery >= 4)
+=>
+    (chat-local-to-self "b farm")
+    (build b-farm)
+)
+(defrule
+    (can-build b-lumber-camp)
+    (building-type-count b-lumber-camp < 3)
+    (building-type-count b-monastery >= 4)
+=>
+    (chat-local-to-self "b lumber camp")
+    (build b-lumber-camp)
+)
+(defrule
+    (can-build b-mining-camp)
+    (building-type-count b-mining-camp < 6)
+    (building-type-count b-monastery >= 4)
+=>
+    (chat-local-to-self "b mining camp")
+    (build b-mining-camp)
+)
+(defrule
+    (can-build b-monastery)
+    (building-type-count b-monastery < 4)
+=>
+    (chat-local-to-self "b monastery")
+    (build b-monastery)
+)
+(defrule
+    (can-build b-university)
+    (building-type-count b-university < 1)
+    (building-type-count b-monastery >= 4)
+=>
+    (chat-local-to-self "b university")
+    (build b-university)
+)
+(defrule
+    (can-build b-castle)
+    (building-type-count b-castle < 1)
+=>
+    (chat-local-to-self "b castle")
+    (build b-castle)
+)
+(defrule
+    (can-build b-town-center)
+    (building-type-count b-town-center < 2)
+    (building-type-count b-monastery >= 4)
+    (building-type-count b-castle >= 1)
+=>
+    (chat-local-to-self "b town center2")
+    (build b-town-center)
+)
+(defrule
+    (can-build b-town-center)
+    (building-type-count b-town-center < 3)
+    (unit-type-count u-villager >= 50)
+    (building-type-count b-monastery >= 4)
+    (building-type-count b-castle >= 1)
+=>
+    (chat-local-to-self "b town center3")
+    (build b-town-center)
+)
+(defrule
+    (can-build b-castle)
+    (building-type-count b-castle < 2)
+    (unit-type-count u-villager >= 50)
+=>
+    (chat-local-to-self "b castle2")
+    (build b-castle)
+)
+(defrule
+    (can-build b-town-center)
+    (building-type-count b-town-center < 4)
+    (unit-type-count u-villager >= 70)
+    (building-type-count b-monastery >= 4)
+    (building-type-count b-castle >= 2)
+=>
+    (chat-local-to-self "b town center4")
+    (build b-town-center)
+)
+(defrule
+    (can-build b-castle)
+    (building-type-count b-castle < 3)
+    (unit-type-count u-villager >= 60)
+=>
+    (chat-local-to-self "b castle3")
+    (build b-castle)
+)
+(defrule
+    (can-build b-castle)
+    (building-type-count b-castle < 4)
+    (unit-type-count u-villager >= 80)
+=>
+    (chat-local-to-self "b castle4")
+    (build b-castle)
+)
+; ## Units
+(defrule
+    (can-train u-villager)
+    (unit-type-count u-villager < 130)
+    (goal ad-castle 2)
+    (research-completed r-hand-cart)
+    (not(can-research imperial-age))
+=>
+    (chat-local-to-self "u villager")
+    (train u-villager)
+)
+(defrule
+    (can-train u-monk)
+    (unit-type-count u-monk < 6)
+=>
+    (chat-local-to-self "u monk")
+    (train u-monk)
+)
+; # Castle to Imperial
+; ## Strategies
+(defrule
+    (goal ad-imperial 1)
+=>
+    (chat-local-to-self "cti init")
+    (set-strategic-number sn-maximum-town-size 32)
+    (set-strategic-number sn-camp-max-distance 100)
+    (set-strategic-number sn-maximum-hunt-drop-distance -2)
+    (set-strategic-number sn-number-explore-groups 0)
+    (disable-self)
+)
+; ## Research
+; ## Buildings
+(defrule
+    (or
+        (goal ad-imperial 1)
+        (goal ad-imperial 2)
+    )
+    (can-build b-farm)
+    (building-type-count b-farm < 150)
+=>
+    (chat-local-to-self "b farm")
+    (build b-farm)
+)
+(defrule
+    (or
+        (goal ad-imperial 1)
+        (goal ad-imperial 2)
+    )
+    (can-build b-lumber-camp)
+    (building-type-count b-lumber-camp < 10)
+=>
+    (chat-local-to-self "b lumber camp")
+    (build b-lumber-camp)
+)
+(defrule
+    (or
+        (goal ad-imperial 1)
+        (goal ad-imperial 2)
+    )
+    (can-build b-mining-camp) 
+    (building-type-count b-mining-camp < 16)
+=>
+    (chat-local-to-self "b mining camp")
+    (build b-mining-camp)
+)
+(defrule
+    (or
+        (goal ad-imperial 1)
+        (goal ad-imperial 2)
+    )
+    (can-build b-archery-range)
+    (building-type-count b-archery-range < 10)
+=>
+    (chat-local-to-self "b archery range")
+    (build b-archery-range)
+)(defrule
+    (or
+        (goal ad-imperial 1)
+        (goal ad-imperial 2)
+    )
+    (can-build b-monastery)
+    (building-type-count b-monastery < 10)
+=>
+    (chat-local-to-self "b monastery")
+    (build b-monastery)
+)
+; ## Units
+; # Imperial Age
+; ## Strategies
+(defrule
+    (current-age == imperial-age)
+=>
+    (chat-local-to-self "imperial init")
+    (set-goal ad-imperial 2)
+    (set-strategic-number sn-maximum-town-size 35)
+    (disable-self)
+)
+(defrule
+    (current-age == imperial-age)
+=>
+    (chat-local-to-self "imperial resource config")
+    (set-strategic-number sn-food-gatherer-percentage 30)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 25)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (disable-self)
+)
+(defrule
+    (game-time >= 3600)
+    (current-age == imperial-age)
+=>  
+    (set-strategic-number sn-food-gatherer-percentage 40)
+    (set-strategic-number sn-wood-gatherer-percentage 60)
+    (set-strategic-number sn-gold-gatherer-percentage 0)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-timer t-c-timer)
+    (disable-self)
+)
+(defrule
+    (current-age == imperial-age)
+=>
+    ; (enable-timer t-i-timer 3)
+    (chat-local-to-self "ir timer")
+    (disable-self)
+)
+(defrule
+    (current-age == imperial-age)
+    ; (timer-triggered t-i-timer)
+    (wood-amount >= 3000)
+=>
+    (sell-commodity wood)
+    (chat-local-to-self "ir sell wood")
+    ; (enable-timer t-i-timer 3)
+)
+(defrule
+    (current-age == imperial-age)
+    ; (timer-triggered t-i-timer)
+    (food-amount >= 3000)
+=>
+    (sell-commodity food)
+    (chat-local-to-self "ir sell food")
+    ; (enable-timer t-i-timer 3)
+)
+(defrule
+    (current-age == imperial-age)
+    ; (timer-triggered t-i-timer)
+    (wood-amount >= 6000)
+=>
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (chat-local-to-self "ir sell wood")
+    ; (enable-timer t-i-timer 3)
+)
+(defrule
+    (current-age == imperial-age)
+    ; (timer-triggered t-i-timer)
+    (food-amount >= 6000)
+=>
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (chat-local-to-self "ir sell food")
+    ; (enable-timer t-i-timer 3)
+)
+(defrule
+    (current-age == imperial-age)
+    ; (timer-triggered t-i-timer)
+    (food-amount < 500)
+    (gold-amount >= 5000)
+=>
+    (buy-commodity food)
+    (chat-local-to-self "ir buy food")
+    ; (enable-timer t-i-timer 3)
+)
+(defrule
+    (current-age == imperial-age)
+    ; (timer-triggered t-i-timer)
+    (wood-amount < 500)
+    (gold-amount >= 5000)
+=>
+    (buy-commodity wood)
+    (chat-local-to-self "ir buy wood")
+    ; (enable-timer t-i-timer 3)
+)
+(defrule
+    (current-age == imperial-age)
+    ; (timer-triggered t-i-timer)
+    (stone-amount < 650)
+    (gold-amount >= 3000)
+=>
+    (buy-commodity stone)
+    (chat-local-to-self "ir buy stone")
+    ; (enable-timer t-i-timer 3)
+)
+(defrule
+    (current-age == imperial-age)
+=>
+    (enable-timer t-tsa-timer 1800)
+    (chat-local-to-self "tsa timer")
+    (disable-self)
+)
+(defrule
+    (current-age == imperial-age)
+    (timer-triggered t-tsa-timer)
+    (population >= 450)
+=>
+    (set-goal attack 1)
+    (enable-timer t-tsa-end-timer 600)
+    (enable-timer t-tsa-timer 1800)
+    (chat-local-to-self "tsa start")
+)
+(defrule
+    (timer-triggered t-tsa-end-timer)
+    (goal attack 1)
+=>
+    (set-goal attack 2)
+    (chat-local-to-self "tsa end timer")
+)
+; ## Research
+(defrule
+    (can-research r-bracer)
+=>
+    (chat-local-to-self "r bracer")
+    (research r-bracer)
+)
+(defrule
+    (can-research r-blast-furnace)
+=>
+    (chat-local-to-self "r blast furnace")
+    (research r-blast-furnace)
+)
+(defrule
+    (can-research r-plate-mail-armor)
+=>
+    (chat-local-to-self "r plate mail armor")
+    (research r-plate-mail-armor)
+)
+(defrule
+    (can-research r-crop-rotation)
+=>
+    (chat-local-to-self "r crop rotation")
+    (research r-crop-rotation)
+)
+(defrule
+    (can-research r-garland-wars)
+=>
+    (chat-local-to-self "r garland wars")
+    (research r-garland-wars)
+)
+(defrule
+    (can-research r-elite-jaguar-warrior)
+=>
+    (chat-local-to-self "r elite jaguar warrior")
+    (research r-elite-jaguar-warrior)
+)
+(defrule
+    (can-research r-chemistry)
+=>
+    (chat-local-to-self "r chemistry")
+    (research r-chemistry)
+)
+(defrule
+    (can-research r-conscription)
+=>
+    (chat-local-to-self "r conscription")
+    (research r-conscription)
+)
+(defrule
+    (can-research r-theocracy)
+=>
+    (chat-local-to-self "r theocracy")
+    (research r-theocracy)
+)
+(defrule
+    (can-research r-block-printing)
+=>
+    (chat-local-to-self "r block printing")
+    (research r-block-printing)
+)
+(defrule
+    (can-research r-illumination)
+=>
+    (chat-local-to-self "r illumination")
+    (research r-illumination)
+)
+(defrule
+    (current-age == imperial-age)
+    (can-research r-redemption)
+=>
+    (chat-local-to-self "r redemption")
+    (research r-redemption)
+)
+(defrule
+    (current-age == imperial-age)
+    (can-research r-atonement)
+=>
+    (chat-local-to-self "r atonement")
+    (research r-atonement)
+)
+(defrule
+    (can-research r-herbal-medicine)
+    (goal ad-imperial 2)
+    (current-age == imperial-age)
+=>
+    (chat-local-to-self "r herbal medicine")
+    (research r-herbal-medicine)
+    (disable-self)
+)
+(defrule
+    (can-research ri-sanctity)
+    (goal ad-imperial 2)
+    (current-age == imperial-age)
+=>
+    (chat-local-to-self "r sanctity")
+    (research r-sanctity)
+)
+(defrule
+    (current-age == imperial-age)
+    (can-research r-squires)
+=>
+    (chat-local-to-self "r squires")
+    (research r-squires)
+)
+(defrule
+    (current-age == imperial-age)
+    (can-research r-arson)
+=>
+    (chat-local-to-self "r arson")
+    (research r-arson)
+)
+(defrule
+    (current-age == imperial-age)
+    (can-research r-crossbow)
+=>
+    (chat-local-to-self "r crossbow")
+    (research r-crossbow)
+)
+(defrule
+    (can-research r-arbalest)
+=>
+    (chat-local-to-self "r arbalest")
+    (research r-arbalest)
+)
+; ## Buildings
+(defrule
+    (current-age == imperial-age)
+    (can-build b-castle)
+    (building-type-count b-castle < 7)
+=>
+    (chat-local-to-self "b castle")
+    (build b-castle)
+)
+; ## Units
+(defrule
+    (current-age == imperial-age)
+    (unit-type-count u-jaguar-warrior < 120)
+    (can-train u-jaguar-warrior)
+=>
+    (chat-local-to-self "u jaguar warrior")
+    (train u-jaguar-warrior)
+)
+(defrule
+    (current-age == imperial-age)
+    (unit-type-count u-arbalest < 120)
+    (can-train u-arbalest)
+=>
+    (chat-local-to-self "u arbalest")
+    (train u-arbalest)
+)
+(defrule
+    (current-age == imperial-age)
+    (research-completed r-block-printing)
+    (research-completed r-illumination)
+    (research-completed r-redemption)
+    (research-completed r-atonement)
+    (research-completed r-herbal-medicine)
+    (research-completed r-sanctity)
+    (research-completed r-fervor)
+    (research-completed r-theocracy)
+    (unit-type-count u-monk < 100)
+    (unit-type-count trebuchet >= 8)
+    (can-train u-monk)
+=>
+    (chat-local-to-self "u monk")
+    (train u-monk)
+)
+(defrule
+    (current-age == imperial-age)
+    (research-completed r-block-printing)
+    (research-completed r-illumination)
+    (research-completed r-redemption)
+    (research-completed r-atonement)
+    (research-completed r-herbal-medicine)
+    (research-completed r-sanctity)
+    (research-completed r-fervor)
+    (research-completed r-theocracy)
+    (unit-type-count u-trebuchet < 30)
+    (can-train u-trebuchet)
+=>
+    (chat-local-to-self "u trebuchet")
+    (train u-trebuchet)
+)
