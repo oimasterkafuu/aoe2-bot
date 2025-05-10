@@ -1,4 +1,4 @@
-; Hammer v2.2.8
+; Hammer v2.2.9
 ; Copyright 2025 oimasterkafuu
 
 
@@ -18,7 +18,7 @@
     (goal intro-goal 1)
     (timer-triggered intro-timer)
 =>
-    (chat-to-all "Hammer v2.2.8")
+    (chat-to-all "Hammer v2.2.9")
     (set-goal intro-goal 2)
     (enable-timer intro-timer 3)
 )
@@ -1024,6 +1024,26 @@
 	(enable-timer attack-timer 5)
 )
 
+; 城堡时代建造额外修道院
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery < 2)
+    (can-build monastery)
+=>
+    (build monastery)
+    (chat-local-to-self "Building Monastery for collecting relics")
+)
+
+; 训练僧侣（城堡时代）
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total monk < 5)
+    (up-pending-objects c: monk < 2)
+    (can-train monk)
+=>
+    (train monk)
+)
 
 ; 黑暗时代初始兵营
 (defrule
@@ -1095,24 +1115,6 @@
     (build university)
 )
 
-; 阿兹特克修道院建造
-(defrule
-    (current-age >= castle-age)
-    (building-type-count-total monastery == 0)
-    (can-build monastery)
-=>
-    (build monastery)
-)
-
-; 建造额外修道院
-(defrule
-    (current-age >= castle-age)
-    (building-type-count-total monastery < 2)
-    (can-build monastery)
-=>
-    (build monastery)
-    (chat-local-to-self "Building Monastery for collecting relics")
-)
 
 (defrule
     (building-type-count-total monastery > 2)
@@ -1631,7 +1633,6 @@
 
 (defrule
     (current-age >= imperial-age)
-    (gold-amount > 600)
     (or
         (military-population >= 150)
         (and
@@ -1642,6 +1643,10 @@
     (or
         (goal attack-goal 0)
         (up-timer-status attack-timer == timer-disabled)
+    )
+    (or
+        (gold-amount > 600)
+        (military-population >= 250)
     )
 =>
     (chat-local-to-self "Attack!!!")
@@ -2051,7 +2056,7 @@
 )
 
 (defrule
-    (current-age >= castle-age)
+    (current-age >= imperial-age)
     (goal AllowMilitaryTechs YES)
     (can-research ri-wheel-barrow)
 =>
@@ -2059,14 +2064,14 @@
 )
 
 (defrule
-    (current-age >= castle-age)
+    (current-age >= imperial-age)
     (goal AllowMilitaryTechs YES)
     (can-research ri-town-watch)
 =>
     (research ri-town-watch)
 )
 (defrule
-    (current-age >= castle-age)
+    (current-age >= imperial-age)
     (goal AllowMilitaryTechs YES)
     (can-research ri-town-patrol)
 =>
@@ -2074,7 +2079,7 @@
 )
 
 (defrule
-    (current-age >= castle-age)
+    (current-age >= imperial-age)
     (goal AllowMilitaryTechs YES)
     (can-research ri-hand-cart)
 =>
@@ -2363,14 +2368,6 @@
     (train monk)
 )
 
-; 阿兹特克修道院建造
-(defrule
-    (current-age >= castle-age)
-    (building-type-count-total monastery == 0)
-    (can-build monastery)
-=>
-    (build monastery)
-)
 
 ; 修道院技术研究
 (defrule
@@ -2657,6 +2654,7 @@
 ; 帝王时代设置为平衡阶段
 (defrule
     (current-age == imperial-age)
+    (not (goal CastleResearchPhase BALANCED_PHASE))
 =>
     (set-goal CastleResearchPhase BALANCED_PHASE)
     (chat-local-to-self "Imperial Age: Balanced research and military production")
@@ -2680,7 +2678,7 @@
     (set-strategic-number sn-wood-gatherer-percentage 35)
     (set-strategic-number sn-gold-gatherer-percentage 40)
     (set-strategic-number sn-stone-gatherer-percentage 10)
-    (chat-local-to-self "cr low gold, castle specific")
+    (chat-local-to-self "cr low gold high food, castle specific")
     (enable-timer t-c-timer 30)
 )
 (defrule
@@ -2693,7 +2691,7 @@
     (set-strategic-number sn-wood-gatherer-percentage 15)
     (set-strategic-number sn-gold-gatherer-percentage 40)
     (set-strategic-number sn-stone-gatherer-percentage 10)
-    (chat-local-to-self "cr low gold, castle specific")
+    (chat-local-to-self "cr low gold high wood, castle specific")
     (enable-timer t-c-timer 30)
 )
 (defrule
