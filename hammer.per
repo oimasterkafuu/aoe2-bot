@@ -1,0 +1,3423 @@
+; Hammer v2.2.8
+; Copyright 2025 oimasterkafuu
+
+
+(defconst intro-timer 1)
+(defconst intro-goal 104)
+
+; Intro
+(defrule
+    (true)
+=>
+    (set-goal intro-goal 1)
+    (enable-timer intro-timer 1)
+    (disable-self)
+)
+
+(defrule
+    (goal intro-goal 1)
+    (timer-triggered intro-timer)
+=>
+    (chat-to-all "Hammer v2.2.8")
+    (set-goal intro-goal 2)
+    (enable-timer intro-timer 3)
+)
+
+(defrule
+    (goal intro-goal 2)
+    (timer-triggered intro-timer)
+=>
+    (chat-to-all "Copyright 2025 oimasterkafuu")
+    (set-goal intro-goal 0)
+    (disable-timer intro-timer)
+)
+
+
+; Unit IDs
+(defconst male-hunter 122)
+(defconst female-hunter 216)
+(defconst male-forager 120)
+(defconst female-forager 354)
+(defconst male-shepherd 592)
+(defconst female-shepherd 590)
+(defconst female-gold-miner 579)
+(defconst male-gold-miner 581)
+(defconst hunter 976)
+(defconst food-gatherer 978)
+(defconst ri-herbal-medicine 441)
+(defconst ri-treadmill-crane 54)
+(defconst ri-eagle-warrior 384)
+(defconst unpacked-trebuchet 42)
+(defconst ranged-unit-class 900)
+(defconst building-class 903)
+(defconst villager-class 904)
+(defconst infantry-class 906)
+(defconst siege-unit-class 913)
+(defconst monastery-class 918)
+(defconst scorpion-class 955)
+(defconst tower-class 952)
+(defconst tree-class 915)
+(defconst forage-bush 59)
+(defconst gold-mine 66)
+(defconst stone-mine 102)
+(defconst shore-fish 933)
+(defconst sea-fish 905)
+(defconst sheep 958)
+(defconst relic 285)
+(defconst revealer 112)
+(defconst tc-arrow 54)
+(defconst watch-tower-arrow 786)
+(defconst castle-arrow 746)
+(defconst castle-arrow-chemistry 747)
+
+;User Patch
+(defconst game-time 0); FactId Constants
+(defconst population-cap 1)
+(defconst population-headroom 2)
+(defconst housing-headroom 3)
+(defconst idle-farm-count 4)
+(defconst food-amount 5)
+(defconst wood-amount 6)
+(defconst stone-amount 7)
+(defconst gold-amount 8)
+(defconst escrow-amount 9)
+(defconst commodity-buying-price 10)
+(defconst commodity-selling-price 11)
+(defconst dropsite-min-distance 12)
+(defconst soldier-count 13)
+(defconst attack-soldier-count 14)
+(defconst defend-soldier-count 15)
+(defconst warboat-count 16)
+(defconst attack-warboat-count 17)
+(defconst defend-warboat-count 18)
+(defconst current-age 19)
+(defconst current-score 20)
+(defconst civilization 21)
+(defconst player-number 22)
+(defconst player-in-game 23)
+(defconst unit-count 24)
+(defconst unit-type-count 25)
+(defconst unit-type-count-total 26)
+(defconst building-count 27)
+(defconst building-type-count 28)
+(defconst building-type-count-total 29)
+(defconst population 30)
+(defconst military-population 31)
+(defconst civilian-population 32)
+(defconst random-number 33)
+(defconst resource-amount 34)
+(defconst player-distance 35)
+(defconst allied-goal 36)
+(defconst allied-sn 37)
+(defconst resource-percent 38)
+(defconst enemy-buildings-in-town 39)
+(defconst enemy-units-in-town 40)
+(defconst enemy-villagers-in-town 41)
+(defconst players-in-game 42)
+(defconst defender-count 43)
+(defconst building-type-in-town 44)
+(defconst unit-type-in-town 45)
+(defconst villager-type-in-town 46)
+(defconst gaia-type-count 47)
+(defconst gaia-type-count-total 48)
+(defconst cc-gaia-type-count 49)
+(defconst aggressive 0)
+(defconst defensive 1)
+(defconst stand-ground 2)
+(defconst no-attack 3)
+(defconst projectile-town-center 0); Define ProjectileType Constants
+(defconst projectile-castle 1)
+(defconst projectile-watch-tower 2)
+(defconst projectile-bombard-tower 3)
+(defconst projectile-ship 4)
+(defconst projectile-siege 5)
+(defconst projectile-fortification 6)
+(defconst projectile-any 7)
+(defconst find-attacker 0); Define FindPlayerMethod Constants
+(defconst find-random 1)
+(defconst find-closest 2)
+(defconst find-ordered 3)
+(defconst research-unavailable 0); Define ResearchState Constants
+(defconst research-available 1)
+(defconst research-pending 2)
+(defconst research-complete 3)
+(defconst timer-disabled 0); Define TimerState Constants
+(defconst timer-triggered 1)
+(defconst timer-running 2)
+(defconst group-type-land-attack 100);Define GroupType Constants
+(defconst group-type-land-explore 101)
+(defconst group-type-land-trade 109)
+(defconst group-type-water-attack 102)
+(defconst group-type-water-explore 103)
+(defconst group-type-water-trade 106)
+(defconst group-type-transport-ship 104)
+(defconst group-type-fishing-ship 105)
+(defconst group-type-forward-builder 107)
+(defconst group-type-monk 108)
+(defconst amount-tribute-inefficiency 46)
+(defconst position-center 0)
+(defconst position-opposite 1)
+(defconst position-corner 2)
+(defconst position-enemy 3)
+(defconst position-border 4)
+(defconst position-mirror 5)
+(defconst position-flank 6)
+(defconst position-zero 7)
+(defconst position-map-size 8)
+(defconst position-self 9)
+(defconst position-target 10)
+(defconst position-focus 11)
+(defconst position-object 12)
+(defconst position-point 13)
+(defconst sort-targets 0)
+(defconst sort-random 1)
+(defconst sort-distance 2)
+(defconst sort-hitpoints 3)
+(defconst sort-range 4)
+
+; Evaluation
+(defconst evaluation-hitpoints 0)
+(defconst evaluation-distance 100)
+
+; Goals
+(defconst attack-goal 105)
+(defconst reset 106)
+(defconst retreat-now-goal 107)
+
+; Timers
+(defconst attack-timer 2)
+(defconst reset-town-size-timer 3)
+(defconst town-size-timer 4)
+(defconst t-c-timer 5)
+(defconst retreat-timer 6)
+(defconst tsa-expand-timer 7)
+; Legacy
+
+; 目标定义
+(defconst MyAge 1)                                      ; 年代目标
+(defconst FeudalRushType 2)                             ; 封建突袭类型目标
+(defconst AllowMilitaryUnits 23)                        ; 允许军事单位
+(defconst AllowMilitaryTechs 24)                        ; 允许军事科技
+(defconst AggressiveAI 25)                              ; 允许攻击
+(defconst Advantage 26)                                 ; 确定AI/敌人/无的优势
+(defconst GameType 27)                                  ; 确定地图类型(陆地/水域/游牧)
+(defconst ReadyToAttack 22)                             ; 攻击信号目标
+(defconst EnemyKnights 81)                              ; 敌方骑士目标
+(defconst EnemyArchers 84)                              ; 敌方弓箭手目标
+(defconst JollyGoal 33)                                 ; 城镇规模检查目标
+(defconst MyDecrement 37)                               ; 检测我方军队减少的目标
+
+(defconst CurrentTownSize 187)       
+
+; 目标值常量
+(defconst NONE 0)
+(defconst DARKAGE 0)                                    ; 黑暗时代
+(defconst DARKFEUDAL 1)                                 ; 黑暗到封建过渡
+(defconst FEUDALAGE 2)                                  ; 封建时代
+(defconst FEUDALCASTLE 3)                               ; 封建到城堡过渡
+(defconst CASTLEAGE 4)                                  ; 城堡时代
+(defconst CASTLEIMPERIAL 5)                             ; 城堡到帝王过渡
+(defconst IMPERIALAGE 6)                                ; 帝王时代
+(defconst POSTIMPERIALAGE 7)                            ; 帝王时代后期
+(defconst STARTINGAGE 8)                                ; 开始的年代
+
+(defconst CastleResearchPhase 38)     
+
+; 研究阶段常量
+(defconst RESEARCH_PHASE 1)                              ; 研究阶段标记
+(defconst MILITARY_PHASE 2)                              ; 军事生产阶段标记
+(defconst BALANCED_PHASE 3)                              ; 平衡阶段标记
+
+; 地图类型常量
+(defconst LANDMAP 1)                                     ; 陆地地图
+(defconst WATERMAP 2)                                    ; 水域地图
+(defconst LANDNOMADMAP 3)                                ; 陆地游牧地图
+(defconst WATERNOMADMAP 4)                               ; 水域游牧地图
+
+; 军事单位常量 
+(defconst NO 0)                                          ; 不允许
+(defconst YES 1)                                         ; 允许
+(defconst SLOW 2)                                        ; 慢速生产
+(defconst MANY 2)                                        ; 大量生产
+
+; 攻击状态常量
+(defconst ATTACK_NONE 0)                                 ; 不攻击
+(defconst ATTACK_PREPARE 1)                              ; 准备攻击
+(defconst ATTACK_ACTIVE 2)                               ; 正在攻击
+
+; 时钟定义
+(defconst VillControlTimer 1)                            ; 村民生产控制
+(defconst TownAttackTimer 2)                             ; 城镇防守警报时钟
+(defconst MilProdSpeedTimer 3)                           ; 军事单位生产速度时钟
+(defconst DefenseTimer 4)                                ; 防御时钟
+(defconst TSA_TIMER 5)                                   ; Town Size Attack 定时器
+(defconst TSA_END_TIMER 6)                               ; Town Size Attack 结束定时器
+(defconst ExploreAroundTimer 8)                          ; 用于寻找食物的探索时钟
+
+; 人口上限常量 - 调整为500人口
+(defconst MAXVILLPOP 200)                                ; 最大村民数量
+(defconst MAXBOOMVILLPOP 180)                            ; 最大扩张村民数量
+(defconst POPTOATTACK 150)                               ; 攻击需要的人口
+
+; 攻击部队数量常量
+(defconst FEUDAL_MIN_ARMY 15)                            ; 封建时代最小攻击部队数量
+(defconst CASTLE_MIN_ARMY 120)                           ; 城堡时代最小攻击部队数量
+(defconst IMPERIAL_MIN_ARMY 180)                         ; 帝王时代最小攻击部队数量
+
+; 单位常量
+; (defconst villager 83)                                 ; 村民
+; (defconst monk 125)                                    ; 僧侣
+; (defconst trebuchet 331)                               ; 投石车
+(defconst eagle-scout 751)                             ; 鹰斥候
+; (defconst eagle-warrior eagle-warrior-line)            ; 鹰勇士
+; (defconst jaguar-man-line jaguar-man-line)              ; 美洲豹武士
+
+; 建筑常量
+(defconst barracks 12)                                 ; 兵营
+(defconst farm 50)                                     ; 农田
+(defconst mill 68)                                     ; 磨坊
+(defconst house 70)                                    ; 房屋
+(defconst castle 82)                                   ; 城堡
+(defconst market 84)                                   ; 市场
+(defconst archery-range 87)                            ; 射箭场
+(defconst blacksmith 103)                              ; 铁匠铺
+(defconst monastery 104)                               ; 修道院
+(defconst town-center town-center)                     ; 城镇中心
+(defconst university 209)                              ; 大学
+(defconst lumber-camp 562)                             ; 伐木场
+(defconst mining-camp 584)                             ; 矿场
+(defconst siege-workshop 49)                           ; 攻城武器厂
+
+; 研究常量
+(defconst r-loom 22)                                     ; 织布机
+(defconst r-garland-wars 24)                             ; 花环战争
+(defconst r-chemistry 47)                                ; 化学
+(defconst r-treadmill-crane 54)                          ; 踏车起重机
+(defconst r-feudal-age 101)                              ; 封建时代
+(defconst r-castle-age 102)                              ; 城堡时代
+(defconst r-imperial-age 103)                            ; 帝王时代
+(defconst r-sanctity 231)                                ; 神圣
+(defconst r-illumination 233)                            ; 启蒙
+(defconst r-block-printing 230)                          ; 刻版印刷
+(defconst r-elite-jaguar-warrior 432)                    ; 精锐美洲豹武士
+(defconst r-theocracy 438)                               ; 神权政治
+(defconst r-herbal-medicine 441)                         ; 草药医学
+(defconst r-arson 602)                                   ; 纵火
+
+; 部队撤退相关常量
+(defconst sn-percent-health-retreat 30)                  ; 部队健康程度撤退百分比
+(defconst sn-percent-death-retreat 31)                   ; 部队损失程度撤退百分比
+(defconst sn-retreat-after-target-destroyed 49)          ; 目标被摧毁后的撤退行为
+(defconst sn-special-attack-type2 107)                   ; 特殊攻击类型2
+(defconst sn-special-attack-influence2 110)              ; 特殊攻击影响2
+
+; Init
+
+; 基本游戏初始化
+(defrule
+    (true)
+=>
+    (set-escrow-percentage food 0)                       ; 不进行资源保留
+    (set-escrow-percentage wood 0)
+    (set-escrow-percentage gold 0)
+    (set-escrow-percentage stone 0)
+    (enable-timer VillControlTimer 1)                    ; 初始化村民控制时钟
+    (enable-timer TownAttackTimer 1)                     ; 初始化防御时钟
+    (set-strategic-number sn-percent-attack-boats 0)     ; 禁用船只攻击
+    (disable-self)
+)
+
+; 目标初始化
+(defrule
+    (true)
+=>
+    (set-goal attack-goal 0)
+    (set-goal retreat-now-goal 0)
+    (set-goal reset 0)
+    (disable-timer attack-timer)
+    (disable-timer retreat-timer)
+    (disable-timer reset-town-size-timer)
+    (disable-timer town-size-timer)
+
+    (set-goal FeudalRushType 0)
+    (set-goal AllowMilitaryUnits 0)
+    (set-goal AllowMilitaryTechs 0)
+    (set-goal AggressiveAI 0)
+    (set-goal MyAge STARTINGAGE)
+    (set-goal Advantage NONE)
+    (set-goal ReadyToAttack 0)
+    (set-goal JollyGoal 0)
+    (set-goal MyDecrement NO)
+    (set-goal CastleResearchPhase 0)
+    (set-strategic-number CurrentTownSize 10)
+    (set-strategic-number sn-intelligent-gathering 1)
+    (disable-self)
+)
+
+; 默认地图类型设置
+(defrule
+    (true)
+=>
+    (set-strategic-number sn-number-enemy-objects-required 1000)
+    (set-strategic-number sn-food-dropsite-distance 1)
+    (set-goal GameType WATERMAP)                         ; 默认为水域地图
+    (disable-self)
+)
+
+; 检测陆地地图
+(defrule
+    (cc-players-unit-type-count 0 53 == 0)               ; 检测深海鱼
+    (cc-players-unit-type-count 0 450 == 0)              ; 检测鱼群
+    (cc-players-unit-type-count 0 451 == 0)              ; 这些检测规则是允许的，
+    (cc-players-unit-type-count 0 455 == 0)              ; 用于检测水域或陆地地图
+    (cc-players-unit-type-count 0 456 == 0)              ; 以确定是否允许船坞和战船。
+    (cc-players-unit-type-count 0 457 == 0)
+    (cc-players-unit-type-count 0 458 == 0)
+=>
+    (chat-local-to-self "Map has no water")
+    (set-goal GameType LANDMAP)
+    (disable-self)
+)
+
+; 设置更好的单位和农民行为参数
+(defrule
+    (true)
+=>
+    ; 设置最大掠夺距离 - 防止村民走太远
+    (set-strategic-number sn-maximum-gold-drop-distance 15)
+    (set-strategic-number sn-maximum-wood-drop-distance 15)
+    (set-strategic-number sn-maximum-food-drop-distance 15)
+    (set-strategic-number sn-maximum-stone-drop-distance 15)
+    (set-strategic-number sn-maximum-hunt-drop-distance 10)
+    
+    ; 防御设置
+    (set-strategic-number sn-defense-distance 14)
+    (set-strategic-number sn-camp-max-distance 30)
+    (set-strategic-number sn-sentry-distance 15)
+    (set-strategic-number sn-task-ungrouped-soldiers 1)
+    
+    ; 关闭自动城镇巡逻，兵不会跟太远
+    (set-strategic-number sn-percent-enemy-sighted-response 60)
+    (set-strategic-number sn-hits-before-alliance-change 3)
+    
+    ; 更好的城镇大小控制
+    (set-strategic-number sn-minimum-town-size 4)
+    (disable-self)
+)
+
+; 初始化撤退设置
+(defrule
+    (true)
+=>
+    ; 设置健康度撤退百分比 - 当部队健康度低于35%时撤退
+    (set-strategic-number sn-percent-health-retreat 35)
+    
+    ; 设置死亡率撤退百分比 - 当部队损失超过30%时撤退
+    (set-strategic-number sn-percent-death-retreat 30)
+    
+    ; 设置目标被摧毁后撤退行为 - 值为0表示返回中心点
+    (set-strategic-number sn-retreat-after-target-destroyed 0)
+    
+    (disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-maximum-town-size 8)
+	(set-strategic-number sn-total-number-explorers 4);start with all civilians as explorer and turn them off when sheep or berries are found
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-minimum-civilian-explorers 3)
+	(set-strategic-number sn-number-explore-groups 1);explore with scouts
+	(set-difficulty-parameter ability-to-dodge-missiles 0); 0 = dodge
+	(set-difficulty-parameter ability-to-maintain-distance 0); 0 = kite
+	(set-strategic-number sn-percent-enemy-sighted-response 100);fight with all men
+	(set-strategic-number sn-group-commander-selection-method 0)
+	(set-strategic-number sn-ignore-attack-group-under-attack 0)
+	(set-strategic-number sn-attack-group-size-randomness 0)
+	(set-strategic-number sn-scale-minimum-attack-group-size 0)
+	(set-strategic-number sn-scale-maximum-attack-group-size 0)
+	(set-strategic-number sn-group-leader-defense-distance 3); increases chance to make a few big groups instead of many medium sized ones
+	(disable-self)
+)
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-intelligent-gathering 1);drop resources when switched to another type
+	(set-strategic-number sn-retask-gather-amount 0);minimum amount to collect before allowed to switch	
+	(set-strategic-number sn-camp-max-distance 15);small distances at the start
+	(set-strategic-number sn-mill-max-distance 15)
+	(set-strategic-number sn-cap-civilian-builders 100); maximum villagers that can be tasked as builder
+	(set-strategic-number sn-cap-civilian-explorers 100); maximum villagers that can be tasked as explorer
+	(set-strategic-number sn-maximum-hunt-drop-distance 0);Dont walk all over the map for resources 
+	(set-strategic-number sn-maximum-food-drop-distance 15)
+	(set-strategic-number sn-maximum-wood-drop-distance 15)
+	(set-strategic-number sn-maximum-stone-drop-distance 14)
+	(set-strategic-number sn-maximum-gold-drop-distance 14)
+	(set-strategic-number sn-blot-exploration-map 0);1=rexplore
+	(set-strategic-number sn-blot-size 15);15=default, 0 scouts w/ high LOS, 1 rest
+	(set-strategic-number sn-sentry-distance-variation 0)
+	(disable-self)
+)
+(defrule
+    (game-time > 5400)
+=>
+    (set-strategic-number sn-blot-exploration-map 1)
+    (disable-self)
+)
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-group-form-distance 20)
+	(set-strategic-number sn-consecutive-idle-unit-limit 0)
+	(set-strategic-number sn-percent-attack-soldiers 100);attack with all men
+	(set-strategic-number sn-attack-winning-player 1);attacks the player with most points, irrelevant for us
+	(set-strategic-number sn-attack-winning-player-factor 10000)
+	(set-strategic-number sn-attack-intelligence 1);doesn't really avoid TC/castle fire, but better than nothing
+	(set-strategic-number sn-build-frequency 1);sometimes it helps when AI trys to build next to enemy and get interrupted
+	(set-strategic-number sn-number-build-attempts-before-skip 5)
+	(set-strategic-number sn-max-skips-per-attempt 5)
+	(set-strategic-number sn-coop-share-attacking 1); usually helps ally too late, but better than nothing
+	(set-strategic-number sn-coop-share-information 1); gives information to an AI ally
+	(set-strategic-number sn-garrison-rams 0)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 999); don't build docks in small puddles
+	(disable-self)
+)
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-target-evaluation-in-progress 0)
+	(set-strategic-number sn-target-evaluation-boat 0)
+	(set-strategic-number sn-target-evaluation-rof 0)
+	(set-strategic-number sn-target-evaluation-continent 0)
+	(set-strategic-number sn-target-evaluation-siege-weapon 500);high value => siege vs buildings, soldier vs soldier
+	(set-strategic-number sn-target-evaluation-distance evaluation-distance)
+	(set-strategic-number sn-target-evaluation-time-kill-ratio 0)
+	(set-strategic-number sn-target-evaluation-hitpoints evaluation-hitpoints)
+	(set-strategic-number sn-target-evaluation-damage-capability 1)
+	(set-strategic-number sn-target-evaluation-kills 0)
+	(set-strategic-number sn-target-evaluation-randomness 0)
+	(set-strategic-number sn-target-evaluation-attack-attempts 0)
+	(set-strategic-number sn-target-evaluation-range -100)
+	(set-strategic-number sn-special-attack-type2 904)
+	(set-strategic-number sn-special-attack-influence2 500)
+	(disable-self)
+)
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-zero-priority-distance 450)
+	(set-strategic-number sn-attack-group-gather-spacing 5)
+	(set-strategic-number sn-do-not-scale-for-difficulty-level 1)
+	(set-strategic-number sn-initial-exploration-required 0); !
+	(set-strategic-number sn-gather-defense-units 1)
+	(set-strategic-number sn-ignore-tower-elevation 1)
+	(set-strategic-number sn-task-ungrouped-soldiers 0); spread military 0=no,1=yes
+	(set-strategic-number sn-forage-defend-priority 1)
+	(set-strategic-number sn-gold-defend-priority 1)
+	(set-strategic-number sn-stone-defend-priority 1)
+	(set-strategic-number sn-livestock-defend-priority 1)
+	(disable-self)
+)
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-allow-civilian-defense 1)
+;	(set-strategic-number sn-percent-half-exploration 30); default
+;	(set-strategic-number sn-percent-exploration-required 0)
+	(set-strategic-number sn-number-enemy-objects-required 1)
+	(set-strategic-number sn-percent-building-cancellation 5)
+	(set-strategic-number sn-home-exploration-time 300)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 3)
+	(set-strategic-number sn-enable-boar-hunting 1)
+	(set-strategic-number sn-maximum-hunt-drop-distance 24)
+	(set-strategic-number sn-number-civilian-militia 0)
+	(set-strategic-number sn-enable-patrol-attack 1)
+	(set-strategic-number sn-safe-town-size 45)
+	(set-strategic-number sn-livestock-to-town-center 1)
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+	(set-strategic-number sn-wall-targeting-mode 1)
+	(set-strategic-number sn-enable-new-building-system 1)
+	(up-assign-builders c: town-center c: 4)
+	(up-assign-builders c: 621 c: 4)
+	(up-assign-builders c: castle c: 4)
+	(up-assign-builders c: watch-tower c: 2)
+	(up-assign-builders c: guard-tower c: 2)
+	(up-assign-builders c: keep c: 2)
+	(up-assign-builders c: barracks c: 1)
+	(up-assign-builders c: archery-range c: 1)
+	(up-assign-builders c: market c: 2)
+    (up-assign-builders c: blacksmith c: 2)
+	(up-assign-builders c: mining-camp c: 1)
+    (up-assign-builders c: monastery c: 3)
+	; (up-assign-builders c: lumber-camp c: 2)
+	(up-assign-builders c: house c: 1)
+	(disable-self)
+)
+
+; (defrule
+; 	(building-type-count house > 0)
+; =>
+; 	(up-assign-builders c: house c: 1)
+; 	(disable-self)
+; )
+
+; Attack
+
+(defrule
+	(goal attack-goal 2)
+	(timer-triggered attack-timer)
+	(strategic-number sn-maximum-town-size < 40); got something else to reduce high town-size
+=>
+	; (set-goal attack-goal 2)
+	(set-strategic-number sn-maximum-town-size 40)
+
+	(set-strategic-number sn-number-attack-groups 500)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1)
+	(set-strategic-number sn-group-form-distance 5)
+	(enable-timer attack-timer 30); 60
+    (enable-timer retreat-timer 92)
+    (enable-timer tsa-expand-timer 10)
+	(chat-local-to-self "Starting TSA.")
+)
+
+
+(defrule
+    (goal attack-goal 2)
+	(building-type-count town-center > 0)
+	(strategic-number sn-maximum-town-size < 680); 480
+	(strategic-number sn-maximum-town-size >= 40)
+	(not (enemy-buildings-in-town))
+    (timer-triggered tsa-expand-timer)
+=>
+	(up-modify-sn sn-maximum-town-size c:+ 12)
+    (enable-timer retreat-timer 92)
+    (enable-timer tsa-expand-timer 10)
+	(up-chat-data-to-self "TSA safe. Going up to %d" s: sn-maximum-town-size)
+)
+
+(defrule
+    (timer-triggered reset-town-size-timer)
+=>
+    (set-goal reset 1)
+)
+
+(defrule
+	(timer-triggered reset-town-size-timer)
+	(population >= 400)
+=>
+	(disable-timer reset-town-size-timer)
+	(up-reset-unit c: -1)
+	; (set-strategic-number sn-number-attack-groups 0)
+	; (set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-maximum-town-size 38)
+	(chat-local-to-self "Reset town size triggered.")
+)
+(defrule
+	(timer-triggered reset-town-size-timer)
+	(population >= 300)
+=>
+	(disable-timer reset-town-size-timer)
+	(up-reset-unit c: -1)
+	; (set-strategic-number sn-number-attack-groups 0)
+	; (set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-maximum-town-size 35)
+	(chat-local-to-self "Reset town size triggered.")
+)
+(defrule
+	(timer-triggered reset-town-size-timer)
+	(population >= 240)
+=>
+	(disable-timer reset-town-size-timer)
+	(up-reset-unit c: -1)
+	; (set-strategic-number sn-number-attack-groups 0)
+	; (set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-maximum-town-size 30)
+	(chat-local-to-self "Reset town size triggered.")
+)
+(defrule
+	(timer-triggered reset-town-size-timer)
+	(population >= 140)
+=>
+	(disable-timer reset-town-size-timer)
+	(up-reset-unit c: -1)
+	; (set-strategic-number sn-number-attack-groups 0)
+	; (set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-maximum-town-size 25)
+	(chat-local-to-self "Reset town size triggered.")
+)
+(defrule
+	(timer-triggered reset-town-size-timer)
+	(population >= 90)
+=>
+	(disable-timer reset-town-size-timer)
+	(up-reset-unit c: -1)
+	; (set-strategic-number sn-number-attack-groups 0)
+	; (set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-maximum-town-size 22)
+	(chat-local-to-self "Reset town size triggered.")
+)
+(defrule
+	(timer-triggered reset-town-size-timer)
+	(population >= 60)
+=>
+	(disable-timer reset-town-size-timer)
+	(up-reset-unit c: -1)
+	; (set-strategic-number sn-number-attack-groups 0)
+	; (set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-maximum-town-size 20)
+	(chat-local-to-self "Reset town size triggered.")
+)
+(defrule
+	(timer-triggered reset-town-size-timer)
+=>
+	(disable-timer reset-town-size-timer)
+	(up-reset-unit c: -1)
+	; (set-strategic-number sn-number-attack-groups 0)
+	; (set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-maximum-town-size 10)
+	(chat-local-to-self "Reset town size triggered.")
+)
+
+(defrule
+	(timer-triggered retreat-timer)
+=>
+    (chat-local-to-self "Retreat timer triggered.")
+    (set-goal retreat-now-goal 0)
+    (set-goal attack-goal 0)
+	(set-strategic-number sn-maximum-town-size 38)
+	(set-strategic-number sn-number-attack-groups 0)
+	(set-strategic-number sn-group-form-distance 0)
+    (enable-timer reset-town-size-timer 3)
+    (disable-timer attack-timer)
+    (disable-timer retreat-timer)
+    (disable-timer tsa-expand-timer)
+)
+
+(defrule
+	(unit-type-count-total trebuchet-set < 1)
+	(unit-type-count-total battering-ram-line == 0)
+	(cc-players-unit-type-count target-player castle-arrow > 0)
+	(cc-players-unit-type-count target-player castle-arrow-chemistry > 0)
+=>
+	(set-goal retreat-now-goal 1)
+	(chat-to-player my-player-number "retreat out of castle fire")
+)
+(defrule
+	(current-age == feudal-age)
+	(cc-players-unit-type-count target-player watch-tower-arrow > 0)
+=>
+	(chat-to-player my-player-number "retreat out of watch-tower")
+	(set-goal retreat-now-goal 1)
+)
+
+(defrule
+	(cc-players-unit-type-count target-player watch-tower-arrow > 0)
+	(unit-type-count-total battering-ram-line == 0)
+	(unit-type-count-total trebuchet == 0)
+	(timer-triggered attack-timer)
+    (unit-type-count-total ranged-unit-class > 4)
+=>
+	(set-goal retreat-now-goal 1)
+	(chat-to-player my-player-number "retreat out of tower fire")
+)
+(defrule
+	(current-age == feudal-age)
+    (cc-players-unit-type-count target-player tc-arrow > 0)
+=>
+	(set-goal retreat-now-goal 1)
+	(chat-to-player my-player-number "retreat out of TC fire")
+)
+
+(defrule
+    (goal retreat-now-goal 1)
+=>
+    (set-goal retreat-now-goal 0)
+    (set-goal attack-goal 2)
+	(set-strategic-number sn-maximum-town-size 38)
+    (enable-timer reset-town-size-timer 3)
+    (enable-timer attack-timer 10)
+    (set-goal reset 1); to avoid reset-spamming
+)
+
+(defrule
+	(goal reset 1)
+=>
+	(up-reset-unit c: -1)
+	(set-goal reset 0)
+	(enable-timer attack-timer 3)
+)
+
+; Actions
+
+(defrule
+    (true)
+=>
+    (enable-timer town-size-timer 3)
+    (disable-self)
+)
+(defrule
+	(timer-triggered town-size-timer)
+	(strategic-number sn-maximum-town-size < 40)
+=>
+    (up-chat-data-to-self "town-size: %d" s: sn-maximum-town-size)
+    (up-chat-data-to-self "attack-goal: %d" g: attack-goal)
+    (enable-timer reset-town-size-timer 3)
+	(enable-timer town-size-timer 30)
+)
+
+(defrule
+    (can-research ri-loom)
+=>
+    (research ri-loom)
+)
+
+(defrule
+    (current-age == dark-age)
+    (housing-headroom < 3)
+    (population-headroom > 0)
+    (can-build house)
+    (up-pending-objects c: house < 2)
+    (building-type-count-total house < 10)
+=>
+    (build house)
+)
+(defrule
+    (current-age == feudal-age)
+    (housing-headroom < 5)
+    (population-headroom > 0)
+    (can-build house)
+    (up-pending-objects c: house < 2)
+    (building-type-count-total house < 20)
+=>
+    (build house)
+)
+(defrule
+    (current-age == castle-age)
+    (housing-headroom < 10)
+    (population-headroom > 0)
+    (can-build house)
+    (up-pending-objects c: house < 2)
+    (building-type-count-total house < 40)
+=>
+    (build house)
+)
+(defrule
+    (current-age == imperial-age)
+    (housing-headroom < 20)
+    (up-pending-objects c: house < 2)
+    (population-headroom > 0)
+    (up-pending-objects c: house < 2)
+    (can-build house)
+=>
+    (build house)
+)
+
+(defrule
+    (current-age == dark-age)
+	(building-type-count town-center > 0)
+	(wood-amount > 300)
+	(game-time > 180)
+	(up-pending-objects c: farm < 3)
+	(idle-farm-count < 2)
+    (building-type-count-total farm < 10)
+	(can-build farm)
+=>
+	(build farm)
+)
+(defrule
+    (current-age == feudal-age)
+	(building-type-count town-center > 0)
+	(wood-amount > 500)
+	(up-pending-objects c: farm < 3)
+	(idle-farm-count < 3)
+	(can-build farm)
+=>
+	(build farm)
+)
+(defrule
+    (current-age == castle-age)
+	(building-type-count town-center > 0)
+	(wood-amount > 500)
+	(up-pending-objects c: farm < 3)
+	(idle-farm-count < 5)
+	(can-build farm)
+=>
+	(build farm)
+)
+(defrule
+    (current-age == imperial-age)
+	(building-type-count town-center > 0)
+	(wood-amount > 500)
+	(idle-farm-count < 10)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+    (building-type-count-total lumber-camp == 0)
+    (resource-found wood)
+    (up-pending-objects c: lumber-camp < 1)
+    (can-build lumber-camp)
+    (building-type-count-total mill >= 1)
+	(or
+		(wood-amount < 275)
+		(game-time > 100)
+	)
+=>
+    (build lumber-camp)
+)
+(defrule
+    (building-type-count-total lumber-camp < 6)
+    (up-pending-objects c: lumber-camp < 1)
+    (can-build lumber-camp)
+    (dropsite-min-distance wood > 5)
+
+=>
+    (build lumber-camp)
+)
+(defrule
+    (building-type-count-total mill == 0)
+    (resource-found food)
+    (up-pending-objects c: mill < 1)
+    (can-build mill)
+	(resource-found food)
+=>
+    (build mill)
+)
+(defrule
+    (building-type-count-total mill < 3)
+    (unit-type-count-total villager > 13)
+    (up-pending-objects c: mill < 1)
+    (can-build mill)
+	(resource-found food)
+=>
+    (build mill)
+)
+(defrule
+    (building-type-count-total mining-camp <= 1)
+    (building-type-count-total lumber-camp >= 1)
+    (resource-found gold)
+    (up-pending-objects c: mining-camp < 1)
+    (can-build mining-camp)
+    (dropsite-min-distance gold > 5)
+=>
+    (build mining-camp)
+)
+(defrule
+    (building-type-count-total mining-camp <= 1)
+    (building-type-count-total lumber-camp >= 1)
+    (resource-found stone)
+    (up-pending-objects c: mining-camp < 1)
+    (can-build mining-camp)
+    (dropsite-min-distance stone > 5)
+=>
+    (build mining-camp)
+)
+(defrule
+    (building-type-count-total mining-camp < 4)
+    (unit-type-count-total villager > 25)
+    (up-pending-objects c: mining-camp < 1)
+    (can-build mining-camp)
+	(or
+        (and
+		(resource-found gold)
+        (dropsite-min-distance gold > 10)
+        )
+        (and
+		(resource-found stone)
+        (dropsite-min-distance stone > 10)
+        )
+	)
+=>
+    (build mining-camp)
+)
+(defrule
+    (building-type-count-total mining-camp < 8)
+    (unit-type-count-total villager > 50)
+    (up-pending-objects c: mining-camp < 1)
+    (can-build mining-camp)
+	(or
+        (and
+		(resource-found gold)
+        (dropsite-min-distance gold > 10)
+        )
+        (and
+		(resource-found stone)
+        (dropsite-min-distance stone > 10)
+        )
+	)
+=>
+    (build mining-camp)
+)
+
+; --
+
+; 找到足够食物后转换部分探索者为收集者
+(defrule
+    (or
+        (game-time > 60)
+        (resource-found food)
+    )
+=>
+    (set-strategic-number sn-percent-civilian-gatherers 80) ; 大部分村民转为收集者
+    (set-strategic-number sn-total-number-explorers 1)
+    (set-strategic-number sn-percent-civilian-explorers 0)
+    (set-strategic-number sn-minimum-civilian-explorers 0)
+    (set-strategic-number sn-number-explore-groups 2)
+    (chat-local-to-self "Converting explorers to gatherers")
+    (disable-self)
+)
+
+
+; 封建时代增加探索单位
+(defrule
+    (current-age == feudal-age)
+    (not(goal GameType WATERMAP))
+=>
+    (set-strategic-number sn-total-number-explorers 6)
+    (set-strategic-number sn-number-explore-groups 6)
+    (chat-local-to-self "Feudal Age: Increasing exploration")
+    (disable-self)
+)
+
+; 城堡时代调整探索单位
+(defrule
+    (or
+        (cc-players-unit-type-count 0 relic > 0)
+        (game-time > 3600)
+    )
+=>
+    (set-strategic-number sn-total-number-explorers 2)
+    (set-strategic-number sn-number-explore-groups 2)
+    (disable-self)
+)
+
+; 敌方兵力少，我方兵力足够时增加探索
+(defrule
+    (players-military-population every-enemy <= 10)
+    (military-population >= 100)
+=>
+    (set-strategic-number sn-total-number-explorers 20)
+    (set-strategic-number sn-number-explore-groups 20)
+)
+
+(defrule
+    (players-military-population every-enemy <= 10)
+    (military-population >= 100)
+    (or
+        (goal attack-goal 0)
+        (up-timer-status attack-timer == timer-disabled)
+    )
+=>
+    (chat-local-to-self "Attack!!!")
+    (set-goal attack-goal 2)
+	(enable-timer attack-timer 5)
+)
+
+
+; 黑暗时代初始兵营
+(defrule
+    (building-type-count town-center >= 1)
+    (building-type-count-total barracks == 0)
+    (building-type-count-total lumber-camp >= 1)
+    (up-pending-objects c: barracks < 2)
+    (can-build barracks)
+    (wood-amount >= 175)
+=>
+    (build barracks)
+)
+
+; 封建时代 - 射箭场
+(defrule
+    (building-type-count-total archery-range == 0)
+    (up-pending-objects c: archery-range < 1)
+    (can-build archery-range)
+=>
+    (build archery-range)
+)
+
+; 准备升级到城堡时代 - 铁匠铺
+(defrule
+    (building-type-count-total blacksmith == 0)
+    (up-pending-objects c: blacksmith < 1)
+    (can-build blacksmith)
+=>
+    (build blacksmith)
+)
+
+; 准备升级到城堡时代 - 市场
+(defrule
+    (building-type-count-total market == 0)
+    (up-pending-objects c: market < 1)
+    (can-build market)
+=>
+    (build market)
+)
+
+; 城堡时代 - 城堡
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total castle <= 7)
+    (can-build castle)
+=>
+    (build castle)
+)
+
+; 城堡时代 - 攻城武器厂
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total siege-workshop == 0)
+    (unit-type-count-total monk >= 3)
+    (up-pending-objects c: siege-workshop < 1)
+    (can-build siege-workshop)
+=>
+    (build siege-workshop)
+)
+
+; 准备升级到帝王时代 - 大学
+(defrule
+    (current-age == castle-age)
+    (unit-type-count-total villager >= 40)
+    (building-type-count-total university == 0)
+    (up-pending-objects c: university < 1)
+    (can-build university)
+=>
+    (build university)
+)
+
+; 阿兹特克修道院建造
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery == 0)
+    (can-build monastery)
+=>
+    (build monastery)
+)
+
+; 建造额外修道院
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery < 2)
+    (can-build monastery)
+=>
+    (build monastery)
+    (chat-local-to-self "Building Monastery for collecting relics")
+)
+
+(defrule
+    (building-type-count-total monastery > 2)
+=>
+    (up-assign-builders c: monastery c: 1)
+)
+
+; 建造额外的城镇中心
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total town-center < 3)
+    (building-type-count-total castle >= 2)
+    (population >= 120)
+    (up-pending-objects c: town-center < 1)
+    (can-build town-center)
+=>
+    (build town-center)
+    (chat-local-to-self "Building additional town center for expansion")
+)
+
+; 帝王时代建造更多军事建筑 - 兵营
+(defrule
+    (current-age == imperial-age)
+    (building-type-count-total barracks < 3)
+    (up-pending-objects c: barracks < 1)
+    (can-build barracks)
+=>
+    (build barracks)
+)
+
+; 帝王时代建造更多军事建筑 - 射箭场
+(defrule
+    (current-age == imperial-age)
+    (building-type-count-total archery-range < 3)
+    (up-pending-objects c: archery-range < 1)
+    (can-build archery-range)
+=>
+    (build archery-range)
+)
+
+; 帝王时代建造更多军事建筑 - 攻城武器厂
+(defrule
+    (current-age == imperial-age)
+    (building-type-count-total siege-workshop < 2)
+    (up-pending-objects c: siege-workshop < 1)
+    (can-build siege-workshop)
+=>
+    (build siege-workshop)
+)
+
+; 建造防御塔
+(defrule
+    (town-under-attack)
+    (current-age >= feudal-age)
+    (building-type-count-total watch-tower-line < 6)
+    (can-build watch-tower-line)
+    (stone-amount >= 125)  ; 确保有足够石头
+=>
+    (build watch-tower-line)
+)
+
+; 多个敌人攻击时建造更多防御塔
+(defrule
+    (players-building-count any-enemy >= 3)
+    (town-under-attack)
+    (current-age >= castle-age)
+    (building-type-count-total watch-tower-line < 6)
+    (can-build watch-tower-line)
+    (stone-amount >= 125)  ; 确保有足够石头
+=>
+    (build watch-tower-line)
+)
+
+;=====================================================
+; 军事单位训练规则
+;=====================================================
+
+; 定义允许生产军事单位
+(defrule
+    (current-age >= feudal-age)
+    (unit-type-count-total villager >= 30)
+    (goal AllowMilitaryUnits NO)
+=>
+    (set-goal AllowMilitaryUnits YES)
+    (chat-local-to-self "Allowing military unit production")
+)
+
+; 训练民兵/长剑兵（黑暗/封建时代）
+; (defrule
+;     (current-age <= feudal-age)
+;     (goal AllowMilitaryUnits YES)
+;     (unit-type-count-total militiaman-line < 10)
+;     (up-pending-objects c: militiaman-line < 2)
+;     (can-train militiaman-line)
+; =>
+;     (train militiaman-line)
+; )
+
+; 训练枪兵（封建时代及以上）
+(defrule
+    (current-age > feudal-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total spearman-line < 8)
+    (up-pending-objects c: spearman-line < 2)
+    (can-train spearman-line)
+=>
+    (train spearman-line)
+)
+
+; 训练弓箭手（封建时代及以上）
+(defrule
+    (current-age > feudal-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total archer-line < 12)
+    (up-pending-objects c: archer-line < 2)
+    (can-train archer-line)
+=>
+    (train archer-line)
+)
+
+; 训练鹰斥候/鹰勇士（封建时代及以上）- 阿兹特克特色
+(defrule
+    (current-age == feudal-age)
+    (unit-type-count-total eagle-scout < 5)
+    ; (up-pending-objects c: eagle-scout < 2)
+    (can-train eagle-scout)
+=>
+    (train eagle-scout)
+    (chat-local-to-self "Training Eagle Scout for exploration")
+)
+
+; 战斗用鹰斥候/鹰勇士
+; (defrule
+;     (current-age >= feudal-age)
+;     (goal AllowMilitaryUnits YES)
+;     (unit-type-count-total eagle-warrior-line < 15)
+;     (up-pending-objects c: eagle-warrior-line < 2)
+;     (can-train eagle-warrior-line)
+; =>
+;     (train eagle-warrior-line)
+; )
+
+; 城堡时代鹰勇士训练
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (or
+        (goal CastleResearchPhase MILITARY_PHASE)
+        (or
+            (goal CastleResearchPhase BALANCED_PHASE)
+            (or
+                (gold-amount > 800)  ; 黄金充足时可以训练
+                (town-under-attack)  ; 被攻击时需要防御
+            )
+        )
+    )
+    (unit-type-count-total eagle-warrior-line < 7)
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train eagle-warrior-line)
+)
+
+; 研究阶段防御性军事单位训练 - 少量鹰勇士用于防御
+(defrule
+    (current-age == castle-age)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (goal AllowMilitaryUnits YES)
+    (or
+        (town-under-attack)
+        (unit-type-count-total eagle-warrior-line < 5)  ; 维持最少5个鹰勇士防御
+    )
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+    (unit-type-count-total monk >= 5)
+=>
+    (train eagle-warrior-line)
+    (chat-local-to-self "Training minimal Eagle Warriors for defense")
+)
+
+; 训练美洲豹武士（城堡时代） - 阿兹特克特色
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryUnits YES)
+    (or
+        (goal CastleResearchPhase MILITARY_PHASE)
+        (or
+            (goal CastleResearchPhase BALANCED_PHASE)
+            (or
+                (gold-amount > 800)  ; 黄金充足时可以训练
+                (town-under-attack)  ; 被攻击时需要防御
+            )
+        )
+    )
+    (unit-type-count-total jaguar-man-line < 10)
+    (up-pending-objects c: jaguar-man-line < 2)
+    (can-train jaguar-man-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train jaguar-man-line)
+)
+
+; 研究阶段防御性军事单位训练 - 少量美洲豹武士用于防御
+(defrule
+    (current-age == castle-age)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (goal AllowMilitaryUnits YES)
+    (or
+        (town-under-attack)
+        (unit-type-count-total jaguar-man-line < 6)  ; 维持最少6个美洲豹武士防御
+    )
+    (up-pending-objects c: jaguar-man-line < 2)
+    (can-train jaguar-man-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train jaguar-man-line)
+    (chat-local-to-self "Training minimal Jaguar Warriors for defense")
+)
+
+; 研究阶段防御性军事单位训练 - 少量弓箭手用于防御
+(defrule
+    (current-age == castle-age)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (goal AllowMilitaryUnits YES)
+    (or
+        (town-under-attack)
+        (unit-type-count-total archer-line < 8)  ; 维持最少8个弓箭手防御
+    )
+    (up-pending-objects c: archer-line < 2)
+    (can-train archer-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train archer-line)
+    (chat-local-to-self "Training minimal Archers for defense")
+)
+
+; 训练攻城武器 - 冲撞车（城堡时代）
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (or
+        (goal CastleResearchPhase MILITARY_PHASE)
+        (or 
+            (goal CastleResearchPhase BALANCED_PHASE)
+            (or
+                (stone-amount > 1000)  ; 石头太多优先造兵
+                (wood-amount > 1500)   ; 木材太多优先造兵
+            )
+        )
+    )
+    (unit-type-count-total battering-ram-line < 2)  ; 原本数量的一半
+    (up-pending-objects c: battering-ram-line < 1)
+    (can-train battering-ram-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train battering-ram-line)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (or
+        (goal CastleResearchPhase MILITARY_PHASE)
+        (or 
+            (goal CastleResearchPhase BALANCED_PHASE)
+            (or
+                (stone-amount > 1000)  ; 石头太多优先造兵
+                (wood-amount > 1500)   ; 木材太多优先造兵
+            )
+        )
+    )
+    (unit-type-count-total battering-ram-line < 7)
+    (up-pending-objects c: battering-ram-line < 2)
+    (can-train battering-ram-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train battering-ram-line)
+)
+
+; 训练攻城武器 - 轻型投石车（城堡时代）
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total mangonel-line < 2)
+    (up-pending-objects c: mangonel-line < 1)
+    (can-train mangonel-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train mangonel-line)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total mangonel-line < 8)
+    (up-pending-objects c: mangonel-line < 2)
+    (can-train mangonel-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train mangonel-line)
+)
+
+; 训练攻城武器 - 弩炮（城堡时代）
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total scorpion-line < 2)  ; 原本数量的一半
+    (up-pending-objects c: scorpion-line < 1)
+    (unit-type-count-total monk >= 3)
+    (can-train scorpion-line)
+=>
+    (train scorpion-line)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total scorpion-line < 4)
+    (up-pending-objects c: scorpion-line < 2)
+    (unit-type-count-total monk >= 3)
+    (can-train scorpion-line)
+=>
+    (train scorpion-line)
+)
+
+; 训练攻城武器 - 投石车（城堡时代）
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total trebuchet < 3)
+    (up-pending-objects c: trebuchet < 2)
+    (can-train trebuchet)
+=>
+    (train trebuchet)
+)
+
+; 训练僧侣（城堡时代）
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total monk < 5)
+    (up-pending-objects c: monk < 2)
+    (can-train monk)
+=>
+    (train monk)
+)
+
+; 优先训练僧侣收集圣物
+(defrule
+    (current-age == castle-age)
+    (building-type-count-total monastery >= 1)
+    (unit-type-count-total monk < 3)
+    (up-pending-objects c: monk < 2)
+    (can-train monk)
+=>
+    (train monk)
+    (chat-local-to-self "High priority: Training monks for relics")
+)
+
+; 使用僧侣收集圣物
+(defrule
+    (current-age == castle-age)
+    (unit-type-count-total monk >= 1)
+=>
+    (set-strategic-number sn-relic-return-distance 100)
+    (set-strategic-number sn-garrison-rams 0)
+)
+
+; 帝王时代增加美洲豹武士数量 - 阿兹特克特色
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total jaguar-man-line < 100)
+    (up-pending-objects c: jaguar-man-line < 2)
+    (can-train jaguar-man-line)
+    (research-completed r-garland-wars)
+=>
+    (train jaguar-man-line)
+)
+
+; 帝王时代增加鹰勇士数量 - 阿兹特克特色
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total eagle-warrior-line < 40)
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+=>
+    (train eagle-warrior-line)
+)
+
+; 帝王时代增加弓箭手数量
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total archer-line < 80)
+    (up-pending-objects c: archer-line < 2)
+    (can-train archer-line)
+    (research-completed r-garland-wars)
+=>
+    (train archer-line)
+)
+
+; 帝王时代增加投石车数量
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total trebuchet < 20)
+    (up-pending-objects c: trebuchet < 2)
+    (can-train trebuchet)
+    (research-completed r-garland-wars)
+=>
+    (train trebuchet)
+)
+
+; 帝王时代增加僧侣数量
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total monk < 15)
+    (can-train monk)
+    (research-completed r-garland-wars)
+=>
+    (train monk)
+)
+
+; 城堡时代 - 增加军事单位数量
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total militiaman-line < 7)
+    (up-pending-objects c: militiaman-line < 2)
+    (can-train militiaman-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train militiaman-line)
+)
+
+; 城堡时代 - 增加弓箭手数量
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total archer-line < 7)
+    (up-pending-objects c: archer-line < 2)
+    (can-train archer-line)
+    (unit-type-count-total monk >= 3)
+=>
+    (train archer-line)
+)
+
+; 帝王时代 - 进一步增加军事单位
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total militiaman-line < 20)
+    (up-pending-objects c: militiaman-line < 2)
+    (can-train militiaman-line)
+    (research-completed r-garland-wars)
+=>
+    (train militiaman-line)
+)
+
+; 增加枪兵应对骑士
+(defrule
+    (current-age == imperial-age)
+    (goal EnemyKnights YES)
+    (unit-type-count-total spearman-line < 35)
+    (up-pending-objects c: spearman-line < 2)
+    (can-train spearman-line)
+=>
+    (train spearman-line)
+)
+
+; 增加枪兵
+(defrule
+    (current-age == imperial-age)
+    (goal EnemyKnights NO)
+    (unit-type-count-total spearman-line < 25)
+    (up-pending-objects c: spearman-line < 2)
+    (can-train spearman-line)
+=>
+    (train spearman-line)
+)
+
+; 增加鹰勇士应对弓箭手
+(defrule
+    (current-age == imperial-age)
+    (goal EnemyArchers YES)
+    (unit-type-count-total eagle-warrior-line < 50)
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+=>
+    (train eagle-warrior-line)
+)
+
+;=====================================================
+; 攻击和防御规则
+;=====================================================
+
+(defrule
+    (current-age == feudal-age)
+    (or
+        (military-population >= 20)
+        (enemy-buildings-in-town)
+    )
+    (or
+        (goal attack-goal 0)
+        (up-timer-status attack-timer == timer-disabled)
+    )
+=>
+    (chat-local-to-self "Attack!!!")
+    (set-goal attack-goal 2)
+	(enable-timer attack-timer 5)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (gold-amount > 600)
+    (or
+        (military-population >= 150)
+        (and
+            (military-population >= 60)
+            (players-military-population every-enemy <= 20)
+        )
+    )
+    (or
+        (goal attack-goal 0)
+        (up-timer-status attack-timer == timer-disabled)
+    )
+=>
+    (chat-local-to-self "Attack!!!")
+	(set-goal attack-goal 2)
+	(enable-timer attack-timer 5)
+)
+
+;=====================================================
+; 阿兹特克特定升级
+;=====================================================
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-eagle-warrior)
+=>
+    (research ri-eagle-warrior)
+)
+
+; 升级鹰勇士
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-elite-eagle-warrior)
+=>
+    (research ri-elite-eagle-warrior)
+)
+
+(defrule
+    (can-research r-elite-jaguar-warrior)
+=>
+    (research r-elite-jaguar-warrior)
+)
+
+; 研究阿兹特克特有的科技 - Atlatl (增强弓箭手)
+; (defrule
+;     (current-age >= castle-age)
+;     (goal AllowMilitaryTechs YES)
+;     (can-research ri-atlatl)
+; =>
+;     (research ri-atlatl)
+; )
+
+; 研究阿兹特克特有的科技 - Garland Wars (增强步兵)
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research r-garland-wars)
+=>
+    (research r-garland-wars)
+)
+
+; 进阶民兵线升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-long-swordsman)
+=>
+    (research ri-long-swordsman)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-champion)
+=>
+    (research ri-champion)
+)
+
+; 进阶弓箭手线升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-crossbow)
+=>
+    (research ri-crossbow)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-arbalest)
+=>
+    (research ri-arbalest)
+)
+
+; 进阶枪兵线升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-pikeman)
+=>
+    (research ri-pikeman)
+)
+
+;=====================================================
+; 经济升级
+;=====================================================
+
+; 研究经济科技 - 伐木技术
+(defrule
+    (current-age >= feudal-age)
+    (can-research ri-double-bit-axe)
+=>
+    (research ri-double-bit-axe)
+)
+
+; 研究经济科技 - 农田技术
+(defrule
+    (current-age >= feudal-age)
+    (can-research ri-horse-collar)
+=>
+    (research ri-horse-collar)
+)
+
+; 研究经济科技 - 采矿技术
+(defrule
+    (current-age >= feudal-age)
+    (can-research ri-gold-mining)
+=>
+    (research ri-gold-mining)
+)
+
+; 高级伐木技术
+(defrule
+    (current-age >= castle-age)
+    (can-research ri-bow-saw)
+=>
+    (research ri-bow-saw)
+)
+
+; 高级农田技术
+(defrule
+    (current-age >= castle-age)
+    (can-research ri-heavy-plow)
+=>
+    (research ri-heavy-plow)
+)
+
+; 高级采矿技术
+(defrule
+    (current-age >= castle-age)
+    (can-research ri-stone-mining)
+=>
+    (research ri-stone-mining)
+)
+
+; 帝王时代经济升级
+(defrule
+    (current-age >= imperial-age)
+    (can-research ri-two-man-saw)
+=>
+    (research ri-two-man-saw)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (can-research ri-crop-rotation)
+=>
+    (research ri-crop-rotation)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (can-research ri-gold-shaft-mining)
+=>
+    (research ri-gold-shaft-mining)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (can-research ri-stone-shaft-mining)
+=>
+    (research ri-stone-shaft-mining)
+)
+
+;=====================================================
+; 深化军事训练策略
+;=====================================================
+
+; 城堡时代 - 增加军事单位数量
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total militiaman-line < 7)
+    (up-pending-objects c: militiaman-line < 2)
+    (can-train militiaman-line)
+=>
+    (train militiaman-line)
+)
+
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total eagle-warrior-line < 7)
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+=>
+    (train eagle-warrior-line)
+)
+
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total archer-line < 7)
+    (up-pending-objects c: archer-line < 2)
+    (can-train archer-line)
+=>
+    (train archer-line)
+)
+
+; 帝王时代 - 进一步增加军事单位
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total militiaman-line < 20)
+    (up-pending-objects c: militiaman-line < 2)
+    (can-train militiaman-line)
+    (research-completed r-garland-wars)
+=>
+    (train militiaman-line)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total eagle-warrior-line < 30)
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+=>
+    (train eagle-warrior-line)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total archer-line < 25)
+    (up-pending-objects c: archer-line < 2)
+    (can-train archer-line)
+=>
+    (train archer-line)
+)
+
+;=====================================================
+; 攻城武器扩展
+;=====================================================
+
+; 投石车训练（城堡时代）
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total scorpion-line < 4)
+    (up-pending-objects c: scorpion-line < 2)
+    (can-train scorpion-line)
+=>
+    (train scorpion-line)
+)
+
+; 城堡时代 - 投石车
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total trebuchet < 3)
+    (up-pending-objects c: trebuchet < 2)
+    (can-train trebuchet)
+=>
+    (train trebuchet)
+)
+
+;=====================================================
+; 高级黑铁匠铺和大学研究
+;=====================================================
+
+; 黑铁匠铺 - 铠甲升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-chain-mail)
+=>
+    (research ri-chain-mail)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-plate-mail)
+=>
+    (research ri-plate-mail)
+)
+
+; 黑铁匠铺 - 攻击升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-iron-casting)
+=>
+    (research ri-iron-casting)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-blast-furnace)
+=>
+    (research ri-blast-furnace)
+)
+
+; 黑铁匠铺 - 射箭升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-bodkin-arrow)
+=>
+    (research ri-bodkin-arrow)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-bracer)
+=>
+    (research ri-bracer)
+)
+
+; 射箭场 - 射速升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-thumb-ring)
+=>
+    (research ri-thumb-ring)
+)
+
+; 大学 - 防御建筑升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-masonry)
+=>
+    (research ri-masonry)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-ballistics)
+=>
+    (research ri-ballistics)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-treadmill-crane)
+=>
+    (research ri-treadmill-crane)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-architecture)
+=>
+    (research ri-architecture)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-chemistry)
+=>
+    (research ri-chemistry)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-guard-tower)
+=>
+    (research ri-guard-tower)
+)
+
+(defrule
+    (can-research ri-conscription)
+=>
+    (research ri-conscription)
+)
+(defrule
+    (can-research ri-theocracy)
+=>
+    (research ri-theocracy)
+)
+(defrule
+    (can-research ri-block-printing)
+=>
+    (research ri-block-printing)
+)
+(defrule
+    (can-research ri-illumination)
+=>
+    (research ri-illumination)
+)
+(defrule
+    (can-research ri-fervor)
+=>
+    (research ri-fervor)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-wheel-barrow)
+=>
+    (research ri-wheel-barrow)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-town-watch)
+=>
+    (research ri-town-watch)
+)
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-town-patrol)
+=>
+    (research ri-town-patrol)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-hand-cart)
+=>
+    (research ri-hand-cart)
+)
+
+; 市场 - 经济升级
+(defrule
+    (current-age >= castle-age)
+    (can-research ri-banking)
+=>
+    (research ri-banking)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (can-research ri-guilds)
+=>
+    (research ri-guilds)
+)
+
+;=====================================================
+; 高级资源交易策略
+;=====================================================
+
+; 食物过剩时出售食物 - 特殊规则
+(defrule
+    (food-amount > 6000)
+    (or
+        (gold-amount < 3000)
+        (wood-amount < 3000)
+    )
+    (can-sell-commodity food)
+=>
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (sell-commodity food)
+    (chat-local-to-self "Selling excess food from stockpile (>6000)")
+)
+
+
+(defrule
+    (wood-amount > 6000)
+    (or
+        (gold-amount < 3000)
+        (food-amount < 3000)
+    )
+    (can-sell-commodity wood)
+=>
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (chat-local-to-self "Selling excess wood from stockpile (>6000)")
+)
+
+; 食物过剩时出售食物 - 一般情况
+(defrule
+    (food-amount > 2000)
+    (gold-amount < 1000)
+    (not(food-amount > 6000))
+    (can-sell-commodity food)
+=>
+    (sell-commodity food)
+    (sell-commodity food)
+    (chat-local-to-self "Selling excess food")
+)
+
+; 帝王时代食物出售策略
+(defrule
+    (current-age == imperial-age)
+    (food-amount > 1500)
+    (gold-amount < 800)
+    (not(food-amount > 2000))
+    (can-sell-commodity food)
+=>
+    (sell-commodity food)
+    (sell-commodity food)
+    (chat-local-to-self "Selling food in Imperial Age")
+)
+
+; 木材过剩时出售木材 - 大量过剩
+(defrule
+    (wood-amount > 2000)
+    (gold-amount < 1000)
+    (can-sell-commodity wood)
+=>
+    (sell-commodity wood)
+    (sell-commodity wood)
+    (chat-local-to-self "Selling large excess of wood")
+)
+
+; 木材过剩时出售木材 - 一般情况
+(defrule
+    (wood-amount > 1000)
+    (or
+        (food-amount < 500)
+        (gold-amount < 500)
+    )
+    (can-sell-commodity wood)
+=>
+    (sell-commodity wood)
+    (chat-local-to-self "Selling excess wood")
+)
+
+; 石头过剩时出售石头 - 大量过剩
+(defrule
+    (stone-amount > 1500)
+    (or
+        (food-amount < 500)
+        (gold-amount < 500)
+    )
+    (can-sell-commodity stone)
+=>
+    (sell-commodity stone)
+    (chat-local-to-self "Selling large excess of stone")
+)
+
+; 石头过剩时出售石头 - 一般情况
+(defrule
+    (stone-amount > 700)
+    (or
+        (food-amount < 200)
+        (gold-amount < 200)
+    )
+    (building-type-count-total castle >= 2)
+    (can-sell-commodity stone)
+=>
+    (sell-commodity stone)
+    (chat-local-to-self "Selling excess stone")
+)
+
+; 食物紧急缺乏时购买食物
+(defrule
+    (gold-amount > 500)
+    (food-amount < 100)
+    (can-buy-commodity food)
+=>
+    (buy-commodity food)
+    (chat-local-to-self "Emergency food purchase")
+)
+
+; 普通缺乏食物时购买食物
+(defrule
+    (gold-amount > 1000)
+    (food-amount < 500)
+    (can-buy-commodity food)
+=>
+    (buy-commodity food)
+    (chat-local-to-self "Buying food")
+)
+
+; 木材紧急缺乏时购买木材
+(defrule
+    (gold-amount > 800)
+    (wood-amount < 100)
+    (can-buy-commodity wood)
+=>
+    (buy-commodity wood)
+    (chat-local-to-self "Emergency wood purchase")
+)
+
+; 石材紧急缺乏时购买石材 - 需要建造城堡时
+(defrule
+    (gold-amount > 1000)
+    (stone-amount < 150)
+    (building-type-count-total castle < 1)
+    (current-age >= castle-age)
+    (can-buy-commodity stone)
+=>
+    (buy-commodity stone)
+    (chat-local-to-self "Buying stone for first castle")
+)
+
+; 研究进阶时代时的资源交易策略
+(defrule
+    (research-available castle-age)
+    (food-amount < 800)
+    (food-amount > 500)
+    (gold-amount > 1000)
+    (can-buy-commodity food)
+=>
+    (buy-commodity food)
+    (chat-local-to-self "Buying food to advance to Castle Age")
+)
+
+(defrule
+    (research-available imperial-age)
+    (food-amount < 1000)
+    (food-amount > 600)
+    (gold-amount > 1200)
+    (can-buy-commodity food)
+=>
+    (buy-commodity food)
+    (chat-local-to-self "Buying food to advance to Imperial Age")
+)
+
+; 资源不足时出售石头 - 保留原有规则
+(defrule
+    (stone-amount > 300)
+    (food-amount < 200)
+    (can-sell-commodity stone)
+=>
+    (sell-commodity stone)
+    (chat-local-to-self "Selling excess stone")
+)
+
+; 资源不足时出售木头 - 保留原有规则
+(defrule
+    (wood-amount > 1000)
+    (food-amount < 200)
+    (can-sell-commodity wood)
+=>
+    (sell-commodity wood)
+    (chat-local-to-self "Selling excess wood")
+)
+
+; 资源不足时购买食物 - 保留原有规则
+(defrule
+    (gold-amount > 500)
+    (food-amount < 200)
+    (can-buy-commodity food)
+=>
+    (buy-commodity food)
+    (chat-local-to-self "Buying food")
+)
+
+;=====================================================
+; 扩张策略
+;=====================================================
+
+; 帝王时代建造更多军事建筑
+(defrule
+    (current-age == imperial-age)
+    (building-type-count-total barracks < 3)
+    (up-pending-objects c: barracks < 1)
+    (can-build barracks)
+=>
+    (build barracks)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (building-type-count-total archery-range < 3)
+    (up-pending-objects c: archery-range < 1)
+    (can-build archery-range)
+=>
+    (build archery-range)
+)
+
+(defrule
+    (current-age == imperial-age)
+    (building-type-count-total siege-workshop < 2)
+    (up-pending-objects c: siege-workshop < 1)
+    (can-build siege-workshop)
+=>
+    (build siege-workshop)
+)
+
+;=====================================================
+; 阿兹特克文明特定战略
+;=====================================================
+
+; 阿兹特克特有单位训练优先级提高
+(defrule
+    (current-age == castle-age)
+    (goal AllowMilitaryUnits YES)
+    (unit-type-count-total eagle-warrior-line < 7)  ; 优先训练鹰勇士
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+=>
+    (train eagle-warrior-line)
+)
+
+; 阿兹特克僧侣训练 - 拥有特殊治疗能力
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (unit-type-count-total monk < 5)
+    (up-pending-objects c: monk < 2)
+    (can-train monk)
+=>
+    (train monk)
+)
+
+; 阿兹特克修道院建造
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery == 0)
+    (can-build monastery)
+=>
+    (build monastery)
+)
+
+; 修道院技术研究
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (can-research ri-redemption)
+=>
+    (research ri-redemption)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (can-research ri-atonement)
+=>
+    (research ri-atonement)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (can-research r-herbal-medicine)
+=>
+    (research r-herbal-medicine)  ; 阿兹特克僧侣治疗速度更快
+)
+
+;=====================================================
+; 优化现有规则
+;=====================================================
+
+; 更智能的升级到城堡时代决策
+(defrule
+    ; (current-age == feudal-age)
+    (can-research castle-age)
+=>
+    (research castle-age)
+	(set-strategic-number sn-mill-max-distance 40)
+	(set-strategic-number sn-camp-max-distance 40)
+	(set-strategic-number sn-maximum-stone-drop-distance 40)
+	(set-strategic-number sn-maximum-gold-drop-distance 40)
+    (chat-local-to-self "Researching Castle Age - Optimized decision")
+)
+
+; 更智能的资源平衡
+
+
+; 初始黑暗时代资源收集 - 阿兹特克族
+(defrule
+    (goal MyAge STARTINGAGE)
+    (goal GameType LANDMAP)
+    (building-type-count town-center >= 1)
+    (unit-type-count-total villager <= 9)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 100)  ; 100%食物
+    (set-strategic-number sn-wood-gatherer-percentage 0)
+    (set-strategic-number sn-gold-gatherer-percentage 0)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-self)
+)
+
+; 建造农田前的资源分配
+(defrule
+    (goal MyAge STARTINGAGE)
+    (not(goal GameType WATERMAP))
+    (unit-type-count-total villager >= 10)
+    (building-type-count farm < 6)
+    (strategic-number sn-food-gatherer-percentage != 60)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 60)
+    (set-strategic-number sn-wood-gatherer-percentage 40)
+)
+
+; 建造农田后的资源分配
+(defrule
+    (goal MyAge STARTINGAGE)
+    (not(goal GameType WATERMAP))
+    (unit-type-count-total villager >= 15)
+    (building-type-count farm >= 6)
+    (strategic-number sn-food-gatherer-percentage != 75)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 75)
+    (set-strategic-number sn-wood-gatherer-percentage 25)
+)
+
+; 游牧地图上的初始资源分配
+(defrule
+    (goal MyAge STARTINGAGE)
+    (goal GameType LANDNOMADMAP)
+    (building-type-count town-center >= 1)
+    (building-type-count mill == 0)
+    (timer-triggered ExploreAroundTimer)
+    (unit-type-count-total villager <= 10)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 50)
+    (set-strategic-number sn-wood-gatherer-percentage 50)
+    (set-strategic-number sn-gold-gatherer-percentage 0)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+    (disable-self)
+)
+
+; 封建时代资源平衡 - 较少食物
+(defrule
+    (current-age == feudal-age)
+    (unit-type-count-total villager > 20)
+    (food-amount < 300)
+    (strategic-number sn-food-gatherer-percentage < 45)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 45)
+    (set-strategic-number sn-wood-gatherer-percentage 30)
+    (set-strategic-number sn-gold-gatherer-percentage 25)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+; 封建时代资源平衡 - 食物充足
+(defrule
+    (current-age == feudal-age)
+    (unit-type-count-total villager > 20)
+    (food-amount > 600)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 35)
+    (set-strategic-number sn-wood-gatherer-percentage 30)
+    (set-strategic-number sn-gold-gatherer-percentage 35)
+    (set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+; ; 城堡时代资源平衡
+; (defrule
+;     (current-age == castle-age)
+;     (unit-type-count-total villager > 35)
+; =>
+;     (set-strategic-number sn-food-gatherer-percentage 40)
+;     (set-strategic-number sn-wood-gatherer-percentage 30)
+;     (set-strategic-number sn-gold-gatherer-percentage 20)
+;     (set-strategic-number sn-stone-gatherer-percentage 10)
+; )
+
+; ; 帝王时代资源平衡
+; (defrule
+;     (current-age == imperial-age)
+;     (unit-type-count-total villager > 50)
+; =>
+;     (set-strategic-number sn-food-gatherer-percentage 35)
+;     (set-strategic-number sn-wood-gatherer-percentage 30)
+;     (set-strategic-number sn-gold-gatherer-percentage 25)
+;     (set-strategic-number sn-stone-gatherer-percentage 10)
+; )
+
+; ; 城堡时代研究阶段资源分配
+; (defrule
+;     (current-age == castle-age)
+;     (goal CastleResearchPhase RESEARCH_PHASE)
+; =>
+;     (set-strategic-number sn-food-gatherer-percentage 35)
+;     (set-strategic-number sn-wood-gatherer-percentage 30)
+;     (set-strategic-number sn-gold-gatherer-percentage 30)  ; 增加黄金收集比例用于研究
+;     (set-strategic-number sn-stone-gatherer-percentage 5)
+;     (chat-local-to-self "Research Phase: Increased gold collection")
+; )
+
+; ; 城堡时代军事阶段资源分配
+; (defrule
+;     (current-age == castle-age)
+;     (goal CastleResearchPhase MILITARY_PHASE)
+; =>
+;     (set-strategic-number sn-food-gatherer-percentage 40)
+;     (set-strategic-number sn-wood-gatherer-percentage 30)
+;     (set-strategic-number sn-gold-gatherer-percentage 20)
+;     (set-strategic-number sn-stone-gatherer-percentage 10)
+;     (chat-local-to-self "Military Phase: Balanced resource collection")
+; )
+
+; 结束开始阶段
+(defrule
+    (unit-type-count-total villager >= 18)
+    (goal MyAge STARTINGAGE)
+=>
+    (set-goal MyAge 100)                          ; 设置为非特定年代值
+    (set-strategic-number sn-percent-civilian-gatherers 100)
+    (set-strategic-number sn-percent-civilian-explorers 0)
+    (chat-local-to-self "End of STARTINGAGE phase")
+    (disable-self)
+)
+
+;=====================================================
+; 敌方探测和应对策略
+;=====================================================
+
+; 增加探测敌方骑士
+(defrule
+    (current-age >= feudal-age)
+    (players-unit-type-count any-enemy knight-line > 5)
+=>
+    (set-goal EnemyKnights YES)
+    (chat-local-to-self "Detected enemy knight forces")
+)
+
+; 增加探测敌方弓箭手
+(defrule
+    (current-age >= feudal-age)
+    (players-unit-type-count any-enemy archer-line > 8)
+=>
+    (set-goal EnemyArchers YES)
+    (chat-local-to-self "Detected enemy archer forces")
+)
+
+; 增加鹰勇士应对弓箭手
+(defrule
+    (goal EnemyArchers YES)
+    (unit-type-count-total eagle-warrior-line < 30)
+    (up-pending-objects c: eagle-warrior-line < 2)
+    (can-train eagle-warrior-line)
+=>
+    (train eagle-warrior-line)
+)
+
+;=====================================================
+; 年代升级规则
+;=====================================================
+
+; 升级到封建时代
+(defrule
+    ; (current-age == dark-age)
+    ; (or
+    ;     (or
+    ;         (unit-type-count-total villager >= 16)
+    ;         (game-time > 600)
+    ;     )
+    ;     (enemy-buildings-in-town)
+    ; )
+    ; (building-type-count-total barracks >= 1)
+    (can-research feudal-age)
+=>
+    (research feudal-age)
+    (chat-local-to-self "Researching Feudal Age - Optimized decision")
+)
+
+; 升级到帝王时代
+(defrule
+    (can-research imperial-age)
+=>
+    (research imperial-age)
+    (chat-local-to-self "Researching Imperial Age")
+)
+
+
+; 进入城堡时代时设置为研究阶段
+(defrule
+    (current-age == castle-age)
+    (goal CastleResearchPhase 0)
+=>
+    (set-goal CastleResearchPhase RESEARCH_PHASE)
+    (chat-local-to-self "Castle Age Research Phase: Prioritizing technologies")
+    (disable-self)
+)
+
+; 关键技术研究完成后转为军事生产阶段
+(defrule
+    (current-age == castle-age)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (or
+        (and
+            (research-completed ri-bodkin-arrow)
+            (and
+                (research-completed ri-crossbow)
+                (gold-amount > 500)
+            )
+        )
+        (or
+            (and
+                (research-completed ri-chain-mail)
+                (and
+                    (research-completed ri-iron-casting)
+                    (gold-amount > 500)
+                )
+            )
+            (game-time > 1800)  ; 或者游戏时间超过30分钟
+        )
+    )
+=>
+    (set-goal CastleResearchPhase MILITARY_PHASE)
+    (chat-local-to-self "Castle Age Military Phase: Now producing more units")
+)
+
+; 帝王时代设置为平衡阶段
+(defrule
+    (current-age == imperial-age)
+=>
+    (set-goal CastleResearchPhase BALANCED_PHASE)
+    (chat-local-to-self "Imperial Age: Balanced research and military production")
+)
+
+; cr
+(defrule
+    (current-age >= castle-age)
+=>
+    (enable-timer t-c-timer 30)
+    (chat-local-to-self "cr timer")
+    (disable-self)
+)
+(defrule
+    (current-age == castle-age)
+    (food-amount >= 1300)
+    (gold-amount < 800)
+    (timer-triggered t-c-timer)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 15)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 40)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self "cr low gold, castle specific")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (current-age == castle-age)
+    (wood-amount >= 800)
+    (gold-amount < 800)
+    (timer-triggered t-c-timer)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 35)
+    (set-strategic-number sn-wood-gatherer-percentage 15)
+    (set-strategic-number sn-gold-gatherer-percentage 40)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self "cr low gold, castle specific")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (current-age == castle-age)
+    (gold-amount < 800)
+    (unit-type-count-total monk < 3)
+    (unit-type-count-total monastery >= 1)
+    (timer-triggered t-c-timer)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 25)
+    (set-strategic-number sn-wood-gatherer-percentage 25)
+    (set-strategic-number sn-gold-gatherer-percentage 40)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self "cr low gold for monk, castle specific")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (timer-triggered t-c-timer)
+    (food-amount < 1000)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 50)
+    (set-strategic-number sn-wood-gatherer-percentage 40)
+    (set-strategic-number sn-gold-gatherer-percentage 5)
+    (set-strategic-number sn-stone-gatherer-percentage 5)
+    (chat-local-to-self "cr low food")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (timer-triggered t-c-timer)
+    (wood-amount < 800)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 40)
+    (set-strategic-number sn-wood-gatherer-percentage 50)
+    (set-strategic-number sn-gold-gatherer-percentage 5)
+    (set-strategic-number sn-stone-gatherer-percentage 5)
+    (chat-local-to-self "cr low wood")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (gold-amount < 800)
+    (timer-triggered t-c-timer)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 35)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 20)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self "cr low gold")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (timer-triggered t-c-timer)
+    (stone-amount < 700)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 35)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 15)
+    (set-strategic-number sn-stone-gatherer-percentage 15)
+    (chat-local-to-self "cr low stone")
+    (enable-timer t-c-timer 30)
+)
+(defrule
+    (timer-triggered t-c-timer)
+    (food-amount >= 1000)
+    (wood-amount >= 800)
+    (gold-amount >= 800)
+    (stone-amount >= 650)
+=>
+    (set-strategic-number sn-food-gatherer-percentage 40)
+    (set-strategic-number sn-wood-gatherer-percentage 35)
+    (set-strategic-number sn-gold-gatherer-percentage 15)
+    (set-strategic-number sn-stone-gatherer-percentage 10)
+    (chat-local-to-self "cr balanced")
+    (enable-timer t-c-timer 30)
+)
+
+;=====================================================
+; 军事科技研究规则
+;=====================================================
+
+; 定义允许军事科技
+(defrule
+    (current-age >= feudal-age)
+    (unit-type-count-total villager >= 35)
+    (goal AllowMilitaryTechs NO)
+=>
+    (set-goal AllowMilitaryTechs YES)
+    (chat-local-to-self "Allowing military technology research")
+)
+
+; 兵营升级
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-man-at-arms)
+=>
+    (research ri-man-at-arms)
+)
+
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-tracking)
+=>
+    (research ri-tracking)
+)
+
+; 射箭场升级
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-fletching)
+=>
+    (research ri-fletching)
+)
+
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-bow-saw)
+=>
+    (research ri-bow-saw)
+)
+
+; 铁匠铺升级
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-scale-mail)
+=>
+    (research ri-scale-mail)
+)
+
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-forging)
+=>
+    (research ri-forging)
+)
+
+; 阿兹特克特有升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-eagle-warrior)
+=>
+    (research ri-eagle-warrior)
+)
+
+; 升级鹰勇士
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-elite-eagle-warrior)
+=>
+    (research ri-elite-eagle-warrior)
+)
+
+; 美洲豹武士升级
+(defrule
+    (can-research r-elite-jaguar-warrior)
+=>
+    (research r-elite-jaguar-warrior)
+)
+
+; 研究阿兹特克特有的科技 - Garland Wars (增强步兵)
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research r-garland-wars)
+=>
+    (research r-garland-wars)
+)
+
+; 进阶民兵线升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-long-swordsman)
+=>
+    (research ri-long-swordsman)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-champion)
+=>
+    (research ri-champion)
+)
+
+; 进阶弓箭手线升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-crossbow)
+=>
+    (research ri-crossbow)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-arbalest)
+=>
+    (research ri-arbalest)
+)
+
+; 提高弓箭手升级的优先级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (can-research ri-crossbow)
+=>
+    (research ri-crossbow)
+    (chat-local-to-self "Researching Crossbow - HIGH PRIORITY")
+)
+
+; 提高箭矢升级的优先级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (can-research ri-bodkin-arrow)
+=>
+    (research ri-bodkin-arrow)
+    (chat-local-to-self "Researching Bodkin Arrow - HIGH PRIORITY")
+)
+
+; 提高铠甲升级的优先级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (can-research ri-chain-mail)
+=>
+    (research ri-chain-mail)
+    (chat-local-to-self "Researching Chain Mail - HIGH PRIORITY")
+)
+
+; 提高攻击升级的优先级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (goal CastleResearchPhase RESEARCH_PHASE)
+    (can-research ri-iron-casting)
+=>
+    (research ri-iron-casting)
+    (chat-local-to-self "Researching Iron Casting - HIGH PRIORITY")
+)
+
+; 帝王时代提高弓箭手终极升级的优先级
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-arbalest)
+=>
+    (research ri-arbalest)
+    (chat-local-to-self "Researching Arbalest - IMPERIAL PRIORITY")
+)
+
+; 进阶枪兵线升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-pikeman)
+=>
+    (research ri-pikeman)
+)
+
+; 步兵防御升级
+(defrule
+    (current-age >= feudal-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-padded-archer-armor)
+=>
+    (research ri-padded-archer-armor)
+    (chat-local-to-self "Researching Padded Archer Armor")
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-leather-archer-armor)
+=>
+    (research ri-leather-archer-armor)
+    (chat-local-to-self "Researching Leather Archer Armor")
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-ring-archer-armor)
+=>
+    (research ri-ring-archer-armor)
+    (chat-local-to-self "Researching Ring Archer Armor")
+)
+
+; 黑铁匠铺 - 铠甲升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-chain-mail)
+=>
+    (research ri-chain-mail)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-plate-mail)
+=>
+    (research ri-plate-mail)
+)
+
+; 黑铁匠铺 - 攻击升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-iron-casting)
+=>
+    (research ri-iron-casting)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-blast-furnace)
+=>
+    (research ri-blast-furnace)
+)
+
+; 黑铁匠铺 - 射箭升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-bodkin-arrow)
+=>
+    (research ri-bodkin-arrow)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-bracer)
+=>
+    (research ri-bracer)
+)
+
+; 射箭场 - 射速升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-thumb-ring)
+=>
+    (research ri-thumb-ring)
+)
+
+; 步兵速度升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-squires)
+=>
+    (research ri-squires)
+    (chat-local-to-self "Researching Squires")
+)
+
+; 火烧攻击升级
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-arson)
+=>
+    (research ri-arson)
+    (chat-local-to-self "Researching Arson")
+)
+
+; 研究重型撞车升级
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (current-age > castle-age)
+    (unit-type-count-total battering-ram-line >= 2)
+    (can-research ri-capped-ram)
+=>
+    (research ri-capped-ram)
+    (chat-local-to-self "Researching Capped Ram")
+)
+
+; 研究攻城撞车升级
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (current-age >= imperial-age)
+    (unit-type-count-total battering-ram-line >= 3)
+    (can-research ri-siege-ram)
+=>
+    (research ri-siege-ram)
+    (chat-local-to-self "Researching Siege Ram")
+)
+
+; 研究中型投石车升级
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (current-age > castle-age)
+    (unit-type-count-total mangonel-line >= 2)
+    (can-research ri-onager)
+=>
+    (research ri-onager)
+    (chat-local-to-self "Researching Onager")
+)
+
+; 研究重型投石车升级
+(defrule
+    (goal AllowMilitaryTechs YES)
+    (current-age >= imperial-age)
+    (unit-type-count-total mangonel-line >= 3)
+    (can-research ri-siege-onager)
+=>
+    (research ri-siege-onager)
+    (chat-local-to-self "Researching Siege Onager")
+)
+
+; 大学 - 防御建筑升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-masonry)
+=>
+    (research ri-masonry)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-ballistics)
+=>
+    (research ri-ballistics)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-architecture)
+=>
+    (research ri-architecture)
+)
+
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-chemistry)
+=>
+    (research ri-chemistry)
+)
+
+; 城堡/箭塔防御升级
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-murder-holes)
+=>
+    (research ri-murder-holes)
+    (chat-local-to-self "Researching Murder Holes")
+)
+
+; 帝国时代箭塔升级
+(defrule
+    (current-age >= imperial-age) 
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-keep)
+=>
+    (research ri-keep)
+    (chat-local-to-self "Researching Keep")
+)
+
+; 攻城武器工程师
+(defrule
+    (current-age >= imperial-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-siege-engineers)
+=>
+    (research ri-siege-engineers)
+    (chat-local-to-self "Researching Siege Engineers")
+)
+
+; 帝王时代城镇中心升级
+(defrule
+    (can-research ri-conscription)
+=>
+    (research ri-conscription)
+)
+
+;=====================================================
+; 修道院科技研究规则
+;=====================================================
+
+; 修道院基础技术研究
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (can-research ri-redemption)
+=>
+    (research ri-redemption)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (can-research ri-atonement)
+=>
+    (research ri-atonement)
+)
+
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (can-research r-herbal-medicine)
+=>
+    (research r-herbal-medicine)  ; 阿兹特克僧侣治疗速度更快
+)
+
+(defrule
+    (current-age >= castle-age)
+    (building-type-count-total monastery >= 1)
+    (unit-type-count-total monk >= 2)
+    (can-research ri-sanctity)
+=>
+    (research ri-sanctity)
+    (chat-local-to-self "Researching Sanctity for monks")
+)
+
+; 高级修道院技术
+(defrule
+    (can-research ri-theocracy)
+=>
+    (research ri-theocracy)
+)
+
+(defrule
+    (can-research ri-block-printing)
+=>
+    (research ri-block-printing)
+)
+
+(defrule
+    (can-research ri-illumination)
+=>
+    (research ri-illumination)
+)
+
+(defrule
+    (can-research ri-fervor)
+=>
+    (research ri-fervor)
+)
+
+;=====================================================
+; 经济科技研究规则
+;=====================================================
+
+; 研究经济科技 - 伐木技术
+(defrule
+    ; (current-age >= feudal-age)
+    (can-research ri-double-bit-axe)
+=>
+    (research ri-double-bit-axe)
+)
+
+; 研究经济科技 - 农田技术
+(defrule
+    ; (current-age >= feudal-age)
+    (can-research ri-horse-collar)
+=>
+    (research ri-horse-collar)
+)
+
+; 研究经济科技 - 采矿技术
+(defrule
+    ; (current-age >= feudal-age)
+    (can-research ri-gold-mining)
+=>
+    (research ri-gold-mining)
+)
+
+; 高级伐木技术
+(defrule
+    ; (current-age >= castle-age)
+    (can-research ri-bow-saw)
+=>
+    (research ri-bow-saw)
+)
+
+; 高级农田技术
+(defrule
+    ; (current-age >= castle-age)
+    (can-research ri-heavy-plow)
+=>
+    (research ri-heavy-plow)
+)
+
+; 高级采矿技术
+(defrule
+    ; (current-age >= castle-age)
+    (can-research ri-stone-mining)
+=>
+    (research ri-stone-mining)
+)
+
+; 帝王时代经济升级 - 伐木
+(defrule
+    ; (current-age >= imperial-age)
+    (can-research ri-two-man-saw)
+=>
+    (research ri-two-man-saw)
+)
+
+; 帝王时代经济升级 - 农田
+(defrule
+    ; (current-age >= imperial-age)
+    (can-research ri-crop-rotation)
+=>
+    (research ri-crop-rotation)
+)
+
+; 帝王时代经济升级 - 金矿
+(defrule
+    ; (current-age >= castle-age)
+    (can-research ri-gold-shaft-mining)
+=>
+    (research ri-gold-shaft-mining)
+)
+
+; 帝王时代经济升级 - 石矿
+(defrule
+    ; (current-age >= castle-age)
+    (can-research ri-stone-shaft-mining)
+=>
+    (research ri-stone-shaft-mining)
+)
+
+; 市场 - 车轮研究
+(defrule
+    (current-age >= castle-age)
+    (goal AllowMilitaryTechs YES)
+    (can-research ri-wheel-barrow)
+=>
+    (research ri-wheel-barrow)
+)
+
+(defrule
+    (current-age == castle-age)
+    (building-type-count-total monastery >= 1)
+    (unit-type-count-total monk >= 2)
+    (can-research ri-sanctity)
+=>
+    (research ri-sanctity)
+    (chat-local-to-self "Researching Sanctity for monks")
+)
+
+; Villagers
+
+(defrule
+    (current-age == dark-age)
+    (or
+        (food-amount < 300)
+        (unit-type-count-total villager < 8)
+    )
+    (can-train villager)
+=>
+    (train villager)
+)
+(defrule
+    (current-age == feudal-age)
+    (or
+        (food-amount < 500)
+        (gold-amount < 150)
+    )
+    (unit-type-count-total villager < 30)
+    (can-train villager)
+=>
+    (train villager)
+)
+(defrule
+    (current-age == castle-age)
+    (or
+        (food-amount < 700)
+        (gold-amount < 600)
+    )
+    (unit-type-count-total villager < 130)
+    (can-train villager)
+=>
+    (train villager)
+)
+(defrule
+    (current-age == imperial-age)
+    (unit-type-count-total villager < 180)
+    (can-train villager)
+=>
+    (train villager)
+)
+
+; Hahahaha
+(defrule
+    (military-population >= 200)
+    (players-military-population every-enemy < 10)
+=>
+    (chat-to-all "11 Hahaha")
+    (disable-self)
+)
+
+(defrule
+    (military-population >= 200)
+    (players-military-population every-enemy < 20)
+=>
+    (chat-to-all "17 Still play?")
+    (disable-self)
+)
+
+(defrule
+    (military-population >= 200)
+    (players-military-population every-enemy < 30)
+=>
+    (chat-to-all "21 Nice town I'll take it")
+    (disable-self)
+)
+
+(defrule
+    (hold-relics)
+=>
+    (chat-to-all "Hold all relics!!")
+    (disable-self)
+)
