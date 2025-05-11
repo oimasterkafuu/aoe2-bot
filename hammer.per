@@ -1,4 +1,4 @@
-; Hammer v2.2.9
+; Hammer v2.3
 ; Copyright 2025 oimasterkafuu
 
 
@@ -18,7 +18,7 @@
     (goal intro-goal 1)
     (timer-triggered intro-timer)
 =>
-    (chat-to-all "Hammer v2.2.9")
+    (chat-to-all "Hammer v2.3")
     (set-goal intro-goal 2)
     (enable-timer intro-timer 3)
 )
@@ -45,6 +45,7 @@
 (defconst hunter 976)
 (defconst food-gatherer 978)
 (defconst ri-herbal-medicine 441)
+(defconst ri-heresy 439)
 (defconst ri-treadmill-crane 54)
 (defconst ri-eagle-warrior 384)
 (defconst unpacked-trebuchet 42)
@@ -273,20 +274,20 @@
 ; (defconst jaguar-man-line jaguar-man-line)              ; 美洲豹武士
 
 ; 建筑常量
-(defconst barracks 12)                                 ; 兵营
-(defconst farm 50)                                     ; 农田
-(defconst mill 68)                                     ; 磨坊
-(defconst house 70)                                    ; 房屋
-(defconst castle 82)                                   ; 城堡
-(defconst market 84)                                   ; 市场
-(defconst archery-range 87)                            ; 射箭场
-(defconst blacksmith 103)                              ; 铁匠铺
-(defconst monastery 104)                               ; 修道院
-(defconst town-center town-center)                     ; 城镇中心
-(defconst university 209)                              ; 大学
-(defconst lumber-camp 562)                             ; 伐木场
-(defconst mining-camp 584)                             ; 矿场
-(defconst siege-workshop 49)                           ; 攻城武器厂
+; (defconst barracks 12)                                 ; 兵营
+; (defconst farm 50)                                     ; 农田
+; (defconst mill 68)                                     ; 磨坊
+; (defconst house 70)                                    ; 房屋
+; (defconst castle 82)                                   ; 城堡
+; (defconst market 84)                                   ; 市场
+; (defconst archery-range 87)                            ; 射箭场
+; (defconst blacksmith 103)                              ; 铁匠铺
+; (defconst monastery 104)                               ; 修道院
+; (defconst town-center town-center)                     ; 城镇中心
+; (defconst university 209)                              ; 大学
+; (defconst lumber-camp 562)                             ; 伐木场
+; (defconst mining-camp 584)                             ; 矿场
+; (defconst siege-workshop 49)                           ; 攻城武器厂
 
 ; 研究常量
 (defconst r-loom 22)                                     ; 织布机
@@ -1582,7 +1583,7 @@
 (defrule
     (current-age == imperial-age)
     (goal EnemyKnights YES)
-    (unit-type-count-total spearman-line < 35)
+    (unit-type-count-total spearman-line < 45)
     (up-pending-objects c: spearman-line < 2)
     (can-train spearman-line)
 =>
@@ -1635,9 +1636,15 @@
     (current-age >= imperial-age)
     (or
         (military-population >= 150)
-        (and
-            (military-population >= 60)
-            (players-military-population every-enemy <= 20)
+        (or
+            (and
+                (military-population >= 60)
+                (players-military-population every-enemy <= 20)
+            )
+            (and
+                (military-population >= 100)
+                (players-military-population every-enemy <= 30)
+            )
         )
     )
     (or
@@ -1645,8 +1652,11 @@
         (up-timer-status attack-timer == timer-disabled)
     )
     (or
-        (gold-amount > 600)
-        (military-population >= 250)
+        (gold-amount > 1200)
+        (or
+            (enemy-captured-relics)
+            (cc-players-building-type-count any-enemy wonder > 0)
+        )
     )
 =>
     (chat-local-to-self "Attack!!!")
@@ -2245,11 +2255,11 @@
     (chat-local-to-self "Emergency wood purchase")
 )
 
-; 石材紧急缺乏时购买石材 - 需要建造城堡时
+; 石材紧急缺乏时购买石材
 (defrule
-    (gold-amount > 1000)
-    (stone-amount < 150)
-    (building-type-count-total castle < 1)
+    (gold-amount > 3000)
+    (stone-amount < 650)
+    (building-type-count-total castle < 3)
     (current-age >= castle-age)
     (can-buy-commodity stone)
 =>
@@ -2298,6 +2308,16 @@
 =>
     (sell-commodity wood)
     (chat-local-to-self "Selling excess wood")
+)
+
+; 资源不足时出售食物
+(defrule
+    (food-amount > 1500)
+    (wood-amount < 200)
+    (can-sell-commodity food)
+=>
+    (sell-commodity food)
+    (chat-local-to-self "Selling excess food")
 )
 
 ; 资源不足时购买食物 - 保留原有规则
@@ -2558,7 +2578,8 @@
 ; 增加探测敌方骑士
 (defrule
     (current-age >= feudal-age)
-    (players-unit-type-count any-enemy knight-line > 5)
+    (cc-players-unit-type-count any-enemy cavalry-class > 10)
+    
 =>
     (set-goal EnemyKnights YES)
     (chat-local-to-self "Detected enemy knight forces")
@@ -2567,7 +2588,7 @@
 ; 增加探测敌方弓箭手
 (defrule
     (current-age >= feudal-age)
-    (players-unit-type-count any-enemy archer-line > 8)
+    (cc-players-unit-type-count any-enemy archer-line > 10)
 =>
     (set-goal EnemyArchers YES)
     (chat-local-to-self "Detected enemy archer forces")
@@ -2608,6 +2629,8 @@
 (defrule
     (can-research imperial-age)
 =>
+	(set-strategic-number sn-mill-max-distance 60)
+	(set-strategic-number sn-camp-max-distance 60)
     (research imperial-age)
     (chat-local-to-self "Researching Imperial Age")
 )
@@ -3229,6 +3252,20 @@
     (can-research ri-block-printing)
 =>
     (research ri-block-printing)
+)
+
+(defrule
+    (can-research ri-faith)
+    (cc-players-unit-type-count any-enemy monk > 10)
+=>
+    (research ri-faith)
+)
+
+(defrule
+    (can-research ri-heresy)
+    (cc-players-unit-type-count any-enemy monk > 10)
+=>
+    (research ri-heresy)
 )
 
 (defrule
