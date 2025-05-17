@@ -1,4 +1,4 @@
-; Hammer v2.3
+; Hammer v2.3.1
 ; Copyright 2025 oimasterkafuu
 
 
@@ -18,7 +18,7 @@
     (goal intro-goal 1)
     (timer-triggered intro-timer)
 =>
-    (chat-to-all "Hammer v2.3")
+    (chat-to-all "Hammer v2.3.1")
     (set-goal intro-goal 2)
     (enable-timer intro-timer 3)
 )
@@ -995,11 +995,11 @@
 (defrule
     (or
         (cc-players-unit-type-count 0 relic > 0)
-        (game-time > 3600)
+        (game-time > 1320)
     )
 =>
-    (set-strategic-number sn-total-number-explorers 2)
-    (set-strategic-number sn-number-explore-groups 2)
+    (set-strategic-number sn-total-number-explorers 1)
+    (set-strategic-number sn-number-explore-groups 1)
     (disable-self)
 )
 
@@ -1662,6 +1662,17 @@
     (chat-local-to-self "Attack!!!")
 	(set-goal attack-goal 2)
 	(enable-timer attack-timer 5)
+)
+
+(defrule
+    (enemy-captured-relics)
+    (military-population >= 50)
+    (players-military-population every-enemy <= 20)
+=>
+    (chat-local-to-self "Enemy has all relics.")
+    (chat-local-to-self "Attack!!!")
+    (set-goal attack-goal 2)
+    (enable-timer attack-timer 5)
 )
 
 ;=====================================================
@@ -2579,7 +2590,6 @@
 (defrule
     (current-age >= feudal-age)
     (cc-players-unit-type-count any-enemy cavalry-class > 10)
-    
 =>
     (set-goal EnemyKnights YES)
     (chat-local-to-self "Detected enemy knight forces")
